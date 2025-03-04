@@ -3,10 +3,9 @@ import 'package:control_almacen_frontend/screens/existencias_view.dart';
 import 'package:control_almacen_frontend/screens/historial_view.dart';
 import 'package:control_almacen_frontend/screens/salidas_art.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
 
-void main() {
+/*void main() {
   runApp(
     MultiProvider(
       providers: [
@@ -15,6 +14,10 @@ void main() {
       child: MyApp(),
     ),
   );
+} */
+
+void main() {
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

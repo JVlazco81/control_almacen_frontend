@@ -162,7 +162,7 @@ class _ExistenciasViewState extends State<Existencias_View> {
                                       )
                                       : DataTable(
                                         headingRowColor:
-                                            MaterialStateColor.resolveWith(
+                                            WidgetStateColor.resolveWith(
                                               (states) => Colors.grey[300]!,
                                             ),
                                         border: TableBorder.all(

@@ -1,6 +1,7 @@
 import 'package:control_almacen_frontend/screens/entradas_art.dart';
 import 'package:control_almacen_frontend/screens/existencias_view.dart';
 import 'package:control_almacen_frontend/screens/historial_view.dart';
+import 'package:control_almacen_frontend/screens/login.dart';
 import 'package:control_almacen_frontend/screens/salidas_art.dart';
 import 'package:flutter/material.dart';
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
       // Definir las rutas para la navegación
       initialRoute: '/',
       routes: {
-        '/': (context) => Bienvenida(),
+        '/': (context) => Login(),
+        '/bienvenida': (context) => Bienvenida(),
         '/existencias': (context) => Existencias_View(),
         '/historial': (context) => Historial_View(),
         '/entrada': (context) => Entradas_Art(),

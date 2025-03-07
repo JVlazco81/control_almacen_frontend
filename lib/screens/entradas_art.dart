@@ -18,6 +18,8 @@ class _Entradas_ArtState extends State<Entradas_Art> {
   TextEditingController subtotalController = TextEditingController(
     text: "0.00",
   );
+  TextEditingController proveedorController = TextEditingController();
+
   TextEditingController ivaController = TextEditingController(text: "0.00");
   TextEditingController totalController = TextEditingController(text: "0.00");
 
@@ -88,6 +90,136 @@ void _calcularTotales() {
   costoUnidadController.text.isNotEmpty;
 }
 
+void _eliminarArticulo(int index) {
+  setState(() {
+    listaEspera.removeAt(index); // Eliminar de la lista
+    _calcularTotales(); // Recalcular los totales
+  });
+}
+
+void _editarArticulo(int index) {
+  setState(() {
+    // Obtener el artículo seleccionado
+    Map<String, dynamic> articulo = listaEspera[index];
+
+    // Rellenar los campos del formulario con los datos del artículo
+    claveProductoSeleccionada = articulo["clasificacion"];
+    nombreDescripcionController.text = articulo["descripcion"];
+    marcaAutorController.text = articulo["marcaAutor"];
+    unidadMedidaSeleccionada = articulo["unidad"];
+    cantidadController.text = articulo["cantidad"];
+    costoUnidadController.text = articulo["costo"];
+    totalArticuloController.text = articulo["total"];
+
+    // Convertir a valores numéricos para cálculos futuros
+    cantidad = double.tryParse(articulo["cantidad"] ?? "0") ?? 0;
+    costoUnitario = double.tryParse(articulo["costo"] ?? "0") ?? 0;
+    totalArticulo = cantidad * costoUnitario;
+
+    // Eliminar el artículo de la lista
+    listaEspera.removeAt(index);
+
+    // Recalcular los totales después de la eliminación
+    _calcularTotales();
+  });
+}
+
+void _mostrarDialogoReiniciar() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirmación"),
+        content: Text("Estás a punto de reiniciar el formulario. ¿Deseas continuar?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Cerrar la ventana emergente
+            },
+            child: Text("Cancelar"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _reiniciarFormulario(); // Llamar a la función que limpia todo
+              Navigator.of(context).pop(); // Cerrar el diálogo después de reiniciar
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            child: Text("Reiniciar formulario", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _reiniciarFormulario() {
+  setState(() {
+    // Limpiar los campos del formulario
+    proveedorController.clear();
+    fechaFacturaController.clear();
+    marcaAutorController.clear();
+    nombreDescripcionController.clear();
+    claveProductoSeleccionada = null;
+    unidadMedidaSeleccionada = null;
+    cantidadController.clear();
+    costoUnidadController.clear();
+    totalArticulo = 0;
+    totalArticuloController.text = "0.00";
+
+    // Limpiar la lista de espera
+    listaEspera.clear();
+
+    // Reiniciar los totales
+    _calcularTotales();
+
+    // Forzar focus a Clave del Producto
+    FocusScope.of(context).requestFocus(claveProductoFocus);
+  });
+}
+
+bool _validarCamposGenerales() {
+  return proveedorController.text.isNotEmpty && fechaFacturaController.text.isNotEmpty;
+}
+
+void _mostrarDialogoSubirInventario() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirmación"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min, // Evita que el diálogo sea demasiado grande
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Estás a punto de subir estos productos al inventario:\n"),
+            //  Mostrar el listado de productos
+            ...listaEspera.map((producto) => Text(
+                  "${producto["descripcion"]}  x ${producto["cantidad"]}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Cerrar el diálogo sin hacer nada
+            },
+            child: Text("Cancelar"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Aquí se implementará la lógica para subir al inventario
+              Navigator.of(context).pop(); // Cerrar el diálogo
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            child: Text("Subir al inventario", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      );
+    },
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return BaseLayout(
@@ -123,6 +255,7 @@ void _calcularTotales() {
                         Expanded(
                           flex: 2,
                           child: TextField(
+                            controller: proveedorController,
                             decoration: InputDecoration(labelText: 'Proveedor'),
                           ),
                         ),
@@ -305,7 +438,7 @@ void _calcularTotales() {
                           child: TextField(
                             controller: totalArticuloController,
                             decoration: InputDecoration(
-                              labelText: 'Total (artículo)',
+                              labelText: 'Total (productos)',
                               labelStyle: TextStyle(color: Colors.black),
                               filled: true,
                               fillColor: Colors.grey[300],
@@ -342,6 +475,7 @@ void _calcularTotales() {
                                 claveProductoSeleccionada = null;
                                 unidadMedidaSeleccionada = null;
                                 totalArticulo = 0;
+                                totalArticuloController.text = "0.00";
 
                                 // Recalcular totales del contenedor 1
                                 _calcularTotales();
@@ -373,12 +507,9 @@ void _calcularTotales() {
                               cantidadController.clear();
                               costoUnidadController.clear();
                               totalArticulo = 0;
-                              totalArticuloController.clear();
-
+                              totalArticuloController.text = "0.00";
                               // Forzar focus a Clave del Producto
                               FocusScope.of(context).requestFocus(claveProductoFocus);
-
-                              _calcularTotalArticulo();
                             });
                           },
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -482,6 +613,7 @@ void _calcularTotales() {
                           4: FlexColumnWidth(1),
                           5: FlexColumnWidth(1),
                           6: FlexColumnWidth(1),
+                          7: FlexColumnWidth(1), // opciones
                         },
                         children: [
                           // Encabezado de la tabla
@@ -495,10 +627,13 @@ void _calcularTotales() {
                               TableCellWidget(text: 'Cantidad', isHeader: true),
                               TableCellWidget(text: 'Costo', isHeader: true),
                               TableCellWidget(text: 'Total', isHeader: true),
+                              TableCellWidget(text: 'Opciones', isHeader: true),
                             ],
                           ),
                           // Filas dinámicas de la tabla
-                          ...listaEspera.map((articulo) {
+                          ...listaEspera.asMap().entries.map((entry) {
+                            int index = entry.key; // Obtener el índice
+                            Map<String, dynamic> articulo = entry.value; // Obtener el artículo
                             return TableRow(
                               children: [
                                 TableCellWidget(text: articulo["clasificacion"]),
@@ -508,9 +643,71 @@ void _calcularTotales() {
                                 TableCellWidget(text: articulo["cantidad"]),
                                 TableCellWidget(text: articulo["costo"]),
                                 TableCellWidget(text: articulo["total"]),
+                                TableCell(
+                                  child: PopupMenuButton<String>(
+                                    onSelected: (value) {
+                                      if (value == "editar") {
+                                        _editarArticulo(index);
+                                      } else if (value == "eliminar") {
+                                        _eliminarArticulo(index);
+                                      }
+                                    },
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        value: "editar",
+                                        child: Row(
+                                          children: [Icon(Icons.edit, color: Colors.blue), SizedBox(width: 5), Text("Modificar")],
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: "eliminar",
+                                        child: Row(
+                                          children: [Icon(Icons.delete, color: Colors.red), SizedBox(width: 5), Text("Eliminar")],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             );
                           }).toList(),
+                        ],
+                      ),
+                      SizedBox(height: 20), // Espaciado antes de los botones
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end, // Alinear a la derecha
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (listaEspera.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("No hay productos en la lista de espera."),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } else if (!_validarCamposGenerales()) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Por favor, complete la información del proveedor y la fecha de la factura."),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } else {
+                                _mostrarDialogoSubirInventario();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                            child: Text('Subir al inventario', style: TextStyle(color: Colors.white)),
+                          ),
+                          SizedBox(width: 10), // Espaciado entre botones
+                          ElevatedButton(
+                            onPressed: () {
+                              _mostrarDialogoReiniciar();
+                            },
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                            child: Text('Reiniciar formulario', style: TextStyle(color: Colors.white)),
+                          ),
                         ],
                       ),
                     ],

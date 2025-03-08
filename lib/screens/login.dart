@@ -1,6 +1,5 @@
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
 import 'package:flutter/material.dart';
-// Asegúrate de que la ruta sea correcta
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -18,12 +17,23 @@ class Login extends StatelessWidget {
                   children: const [_FormContent()],
                 )
                 : Container(
-                  padding: const EdgeInsets.all(32.0),
+                  padding: const EdgeInsets.all(70.0),
                   constraints: const BoxConstraints(maxWidth: 800),
                   child: Row(
-                    children: const [
-                      Expanded(child: Center(child: FlutterLogo(size: 100))),
-                      Expanded(child: Center(child: _FormContent())),
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/DropboxLogo.png', // 📌 Cambia esto por el nombre real de tu imagen
+                            width: 150, // Ajusta el tamaño según sea necesario
+                            height: 150,
+                            color: Colors.black,
+                            colorBlendMode: BlendMode.srcIn,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      const Expanded(child: Center(child: _FormContent())),
                     ],
                   ),
                 ),
@@ -60,7 +70,7 @@ class __FormContentState extends State<_FormContent> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextFormField(
               obscureText: true,
               decoration: const InputDecoration(
@@ -70,7 +80,7 @@ class __FormContentState extends State<_FormContent> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

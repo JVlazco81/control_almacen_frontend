@@ -111,7 +111,7 @@ class TablaEspera extends StatelessWidget {
 
           SizedBox(height: 20), // Espaciado antes de los botones
 
-          // 🔥 Los botones NO están dentro del ScrollView, por lo que NO se afectan
+          // Los botones NO están dentro del ScrollView, por lo que NO se afectan
           Wrap(
             spacing: 10, // Espaciado horizontal entre botones
             runSpacing: 10, // Espaciado vertical cuando se acomodan en otra línea
@@ -208,6 +208,8 @@ class TablaEspera extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                String jsonEntrada = provider.generarJsonEntrada();
+                print(jsonEntrada); //  Mostrar en consola
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),

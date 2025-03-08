@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/entrada.dart';
 
 class EntradasProvider extends ChangeNotifier {
   List<String> clavesProducto = [
@@ -157,5 +158,17 @@ class EntradasProvider extends ChangeNotifier {
   void setUnidadMedida(String? value) {
     unidadMedidaSeleccionada = value;
     notifyListeners(); // Notifica a la UI para actualizar el select
+  }
+
+  String generarJsonEntrada() {
+    Entrada entrada = Entrada(
+      proveedor: proveedorController.text,
+      fechaFactura: fechaFacturaController.text,
+      folio: folioController.text,
+      nota: notaController.text,
+      productos: List<Map<String, dynamic>>.from(listaEspera),
+    );
+
+    return entrada.toJsonString();
   }
 }

@@ -16,7 +16,6 @@ class _ExistenciasViewState extends State<Existencias_View> {
   final int filasPorPagina = 10;
   int paginaActual = 0;
 
-  // Lista de productos de ejemplo
   final List<Map<String, String>> productos = List.generate(50, (index) {
     return {
       "num": "${index + 1}",
@@ -64,13 +63,12 @@ class _ExistenciasViewState extends State<Existencias_View> {
                   marca.contains(filtro);
             }).toList();
       }
-      paginaActual = 0; // Reiniciar a la primera página después de filtrar
+      paginaActual = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Determinar el rango de datos a mostrar según la paginación
     int inicio = paginaActual * filasPorPagina;
     int fin = inicio + filasPorPagina;
     List<Map<String, String>> productosPaginados = filteredProductos.sublist(
@@ -85,10 +83,8 @@ class _ExistenciasViewState extends State<Existencias_View> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Barra superior con buscador y botón de PDF
             Row(
               children: [
-                // Barra de búsqueda
                 Expanded(
                   child: TextField(
                     controller: searchController,
@@ -105,7 +101,6 @@ class _ExistenciasViewState extends State<Existencias_View> {
                   ),
                 ),
                 SizedBox(width: 20),
-                // Botón para generar PDF
                 Row(
                   children: [
                     Text(
@@ -125,22 +120,20 @@ class _ExistenciasViewState extends State<Existencias_View> {
             ),
             SizedBox(height: 10),
 
-            // Contenedor con scroll horizontal
             Expanded(
-              child: Scrollbar(
-                controller: _horizontalScrollController,
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  controller: _horizontalScrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: MediaQuery.of(context).size.width,
-                    ),
-                    child: Column(
-                      children: [
-                        // Contenedor con scroll vertical para los datos
-                        Expanded(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Scrollbar(
+                      controller: _horizontalScrollController,
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        controller: _horizontalScrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: MediaQuery.of(context).size.width,
+                          ),
                           child: Scrollbar(
                             controller: _verticalScrollController,
                             thumbVisibility: true,
@@ -161,8 +154,14 @@ class _ExistenciasViewState extends State<Existencias_View> {
                                         ),
                                       )
                                       : DataTable(
+                                        columnSpacing:
+                                            12, // Reducir espacio entre columnas
+                                        headingRowHeight:
+                                            36, // Reducir altura del encabezado
+                                        dataRowHeight:
+                                            36, // Reducir altura de las filas
                                         headingRowColor:
-                                            WidgetStateColor.resolveWith(
+                                            MaterialStateColor.resolveWith(
                                               (states) => Colors.grey[300]!,
                                             ),
                                         border: TableBorder.all(
@@ -255,46 +254,54 @@ class _ExistenciasViewState extends State<Existencias_View> {
                             ),
                           ),
                         ),
-
-                        // Paginación (Botones Anterior / Siguiente)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed:
-                                  paginaActual > 0
-                                      ? () {
-                                        setState(() {
-                                          paginaActual--;
-                                        });
-                                      }
-                                      : null,
-                              child: Text('Anterior'),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Página ${paginaActual + 1} de ${((filteredProductos.length / filasPorPagina).ceil()).clamp(1, double.infinity).toInt()}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(width: 10),
-                            ElevatedButton(
-                              onPressed:
-                                  (paginaActual + 1) * filasPorPagina <
-                                          filteredProductos.length
-                                      ? () {
-                                        setState(() {
-                                          paginaActual++;
-                                        });
-                                      }
-                                      : null,
-                              child: Text('Siguiente'),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(height: 32), // Más separación antes de la paginación
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed:
+                            paginaActual > 0
+                                ? () {
+                                  setState(() {
+                                    paginaActual--;
+                                  });
+                                }
+                                : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          foregroundColor: Colors.black,
+                        ),
+                        child: Text('Anterior'),
+                      ),
+                      SizedBox(width: 15),
+                      Text(
+                        'Página ${paginaActual + 1} de ${((filteredProductos.length / filasPorPagina).ceil()).clamp(1, double.infinity).toInt()}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(width: 15),
+                      ElevatedButton(
+                        onPressed:
+                            (paginaActual + 1) * filasPorPagina <
+                                    filteredProductos.length
+                                ? () {
+                                  setState(() {
+                                    paginaActual++;
+                                  });
+                                }
+                                : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple[200],
+                          foregroundColor: Colors.black,
+                        ),
+                        child: Text('Siguiente'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

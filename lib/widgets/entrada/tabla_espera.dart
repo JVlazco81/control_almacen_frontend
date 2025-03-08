@@ -25,87 +25,97 @@ class TablaEspera extends StatelessWidget {
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
-          Table(
-            border: TableBorder.all(),
-            columnWidths: {
-              0: FlexColumnWidth(1),
-              1: FlexColumnWidth(2),
-              2: FlexColumnWidth(1),
-              3: FlexColumnWidth(1),
-              4: FlexColumnWidth(1),
-              5: FlexColumnWidth(1),
-              6: FlexColumnWidth(1),
-              7: FlexColumnWidth(1), // Opciones
-            },
-            children: [
-              // Encabezado de la tabla
-              TableRow(
-                decoration: BoxDecoration(color: Colors.grey[300]),
-                children: [
-                  TableCellWidget(text: 'Clave', isHeader: true),
-                  TableCellWidget(text: 'Descripción', isHeader: true),
-                  TableCellWidget(text: 'Marca o Autor', isHeader: true),
-                  TableCellWidget(text: 'Unidad', isHeader: true),
-                  TableCellWidget(text: 'Cantidad', isHeader: true),
-                  TableCellWidget(text: 'Costo', isHeader: true),
-                  TableCellWidget(text: 'Total', isHeader: true),
-                  TableCellWidget(text: 'Opciones', isHeader: true),
-                ],
-              ),
-              // Filas dinámicas de la tabla
-              ...provider.listaEspera.asMap().entries.map((entry) {
-                int index = entry.key;
-                Map<String, dynamic> articulo = entry.value;
-                return TableRow(
+
+          // tabla con scroll horizontal
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Table(
+              border: TableBorder.all(),
+              columnWidths: {
+                0: FixedColumnWidth(100),
+                1: FixedColumnWidth(150),
+                2: FixedColumnWidth(120),
+                3: FixedColumnWidth(100),
+                4: FixedColumnWidth(80),
+                5: FixedColumnWidth(80),
+                6: FixedColumnWidth(100),
+                7: FixedColumnWidth(100), // Opciones
+              },
+              children: [
+                // Encabezado de la tabla
+                TableRow(
+                  decoration: BoxDecoration(color: Colors.grey[300]),
                   children: [
-                    TableCellWidget(text: articulo["clasificacion"]),
-                    TableCellWidget(text: articulo["descripcion"]),
-                    TableCellWidget(text: articulo["marcaAutor"]),
-                    TableCellWidget(text: articulo["unidad"]),
-                    TableCellWidget(text: articulo["cantidad"]),
-                    TableCellWidget(text: articulo["costo"]),
-                    TableCellWidget(text: articulo["total"]),
-                    TableCell(
-                      child: PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == "editar") {
-                            provider.editarArticulo(index);
-                          } else if (value == "eliminar") {
-                            provider.eliminarArticulo(index);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: "editar",
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, color: Colors.blue),
-                                SizedBox(width: 5),
-                                Text("Modificar"),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: "eliminar",
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, color: Colors.red),
-                                SizedBox(width: 5),
-                                Text("Eliminar"),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    TableCellWidget(text: 'Clave', isHeader: true),
+                    TableCellWidget(text: 'Descripción', isHeader: true),
+                    TableCellWidget(text: 'Marca o Autor', isHeader: true),
+                    TableCellWidget(text: 'Unidad', isHeader: true),
+                    TableCellWidget(text: 'Cantidad', isHeader: true),
+                    TableCellWidget(text: 'Costo', isHeader: true),
+                    TableCellWidget(text: 'Total', isHeader: true),
+                    TableCellWidget(text: 'Opciones', isHeader: true),
                   ],
-                );
-              }).toList(),
-            ],
+                ),
+                // Filas dinámicas de la tabla
+                ...provider.listaEspera.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  Map<String, dynamic> articulo = entry.value;
+                  return TableRow(
+                    children: [
+                      TableCellWidget(text: articulo["clasificacion"]),
+                      TableCellWidget(text: articulo["descripcion"]),
+                      TableCellWidget(text: articulo["marcaAutor"]),
+                      TableCellWidget(text: articulo["unidad"]),
+                      TableCellWidget(text: articulo["cantidad"]),
+                      TableCellWidget(text: articulo["costo"]),
+                      TableCellWidget(text: articulo["total"]),
+                      TableCell(
+                        child: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == "editar") {
+                              provider.editarArticulo(index);
+                            } else if (value == "eliminar") {
+                              provider.eliminarArticulo(index);
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: "editar",
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, color: Colors.blue),
+                                  SizedBox(width: 5),
+                                  Text("Modificar"),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: "eliminar",
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, color: Colors.red),
+                                  SizedBox(width: 5),
+                                  Text("Eliminar"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ],
+            ),
           ),
+
           SizedBox(height: 20), // Espaciado antes de los botones
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end, // Alinear a la derecha
+
+          // 🔥 Los botones NO están dentro del ScrollView, por lo que NO se afectan
+          Wrap(
+            spacing: 10, // Espaciado horizontal entre botones
+            runSpacing: 10, // Espaciado vertical cuando se acomodan en otra línea
+            alignment: WrapAlignment.end, // Alineación a la derecha,
             children: [
               ElevatedButton(
                 onPressed: () {
@@ -119,7 +129,7 @@ class TablaEspera extends StatelessWidget {
                   } else if (!provider.validarCamposGenerales()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text("Por favor, complete la información del proveedor y la fecha de la factura."),
+                        content: Text("Por favor, complete la información general"),
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -130,7 +140,6 @@ class TablaEspera extends StatelessWidget {
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 child: Text('Subir al inventario', style: TextStyle(color: Colors.white)),
               ),
-              SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
                   _mostrarDialogoReiniciar(context, provider);
@@ -161,7 +170,7 @@ class TablaEspera extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                provider.reiniciarFormulario(); // Llamar a la función que limpia todo
+                provider.reiniciarFormulario();
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),

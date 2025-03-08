@@ -115,14 +115,30 @@ class FormProductos extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Wrap(
+            spacing: 10, // Espaciado horizontal entre botones
+            runSpacing: 10, // Espaciado vertical cuando se acomodan en otra línea
+            alignment: WrapAlignment.end, // Alineación a la derecha
             children: [
               ElevatedButton(
-                onPressed: provider.agregarArticulo,
+                onPressed: () {
+                  if (!provider.validarCampos()) {
+                    // Mostrar alerta si falta algún campo
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Por favor, complete todos los campos."),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  // agregar a lista de espera si pasa la validación
+                  provider.agregarArticulo();
+                },
                 child: Text('Agregar a espera'),
               ),
-              SizedBox(width: 10),
+
               ElevatedButton(
                 onPressed: provider.limpiarCamposProducto,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),

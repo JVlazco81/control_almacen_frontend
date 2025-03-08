@@ -12,6 +12,9 @@ class EntradasProvider extends ChangeNotifier {
   List<String> unidadesMedida = ['PZA', 'CAJA', 'PAQUETE'];
   
   // Controladores de texto
+  final TextEditingController folioController = TextEditingController();
+  final TextEditingController notaController = TextEditingController();
+
   final TextEditingController proveedorController = TextEditingController();
   final TextEditingController fechaFacturaController = TextEditingController();
   final TextEditingController fechaActualController = TextEditingController();
@@ -62,8 +65,7 @@ class EntradasProvider extends ChangeNotifier {
 
   // Validación de campos en el contenedor 2
   bool validarCampos() {
-    return marcaAutorController.text.isNotEmpty &&
-           nombreDescripcionController.text.isNotEmpty &&
+    return nombreDescripcionController.text.isNotEmpty &&
            claveProductoSeleccionada != null &&
            unidadMedidaSeleccionada != null &&
            cantidadController.text.isNotEmpty &&
@@ -72,7 +74,7 @@ class EntradasProvider extends ChangeNotifier {
 
   // Validación de los campos generales (Proveedor y Fecha de Factura)
   bool validarCamposGenerales() {
-    return proveedorController.text.isNotEmpty && fechaFacturaController.text.isNotEmpty;
+    return proveedorController.text.isNotEmpty && fechaFacturaController.text.isNotEmpty && folioController.text.isNotEmpty && notaController.text.isNotEmpty;
   }
 
   // Agregar artículo a la lista de espera
@@ -130,6 +132,8 @@ class EntradasProvider extends ChangeNotifier {
     listaEspera.clear();
     calcularTotales();
     notifyListeners();
+    folioController.clear();
+    notaController.clear();
   }
 
   // Limpiar solo los campos del contenedor 2 (productos)

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
-import '../providers/entradas_provider.dart';
-import 'package:provider/provider.dart';
 import '../widgets/entrada/form_informacion.dart';
 import '../widgets/entrada/form_productos.dart';
 import '../widgets/entrada/resumen_totales.dart';

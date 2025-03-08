@@ -56,6 +56,24 @@ class FormularioInformacion extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
+                  controller: provider.folioController,
+                  decoration: InputDecoration(labelText: 'Folio'),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: provider.notaController,
+                  decoration: InputDecoration(labelText: 'Nota'),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
                   controller: provider.entradaAnualController,
                   decoration: InputDecoration(
                     labelText: 'Entrada anual',

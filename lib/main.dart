@@ -8,23 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:control_almacen_frontend/providers/entradas_provider.dart';
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
 
-/*void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        //ChangeNotifierProvider(create: (_) => ProductProvider()),
-      ],
-      child: MyApp(),
-    ),
-  );
-} */
-
 void main() {
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => EntradasProvider()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => EntradasProvider())],
       child: MyApp(),
     ),
   );
@@ -37,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Mi Aplicación Web',
+      title: 'Control de Almacén',
       theme: ThemeData(primarySwatch: Colors.blue),
       // Definir las rutas para la navegación
       initialRoute: '/',

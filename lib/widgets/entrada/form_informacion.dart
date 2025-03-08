@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/entradas_provider.dart';
+
+class FormularioInformacion extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<EntradasProvider>(context);
+
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Información general',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  controller: provider.proveedorController,
+                  decoration: InputDecoration(labelText: 'Proveedor'),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: provider.fechaFacturaController,
+                  decoration: InputDecoration(labelText: 'Fecha de la factura'),
+                  readOnly: true,
+                  onTap: () => showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  ).then((pickedDate) {
+                    if (pickedDate != null) {
+                      provider.fechaFacturaController.text =
+                          "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                    }
+                  }),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: provider.entradaAnualController,
+                  decoration: InputDecoration(
+                    labelText: 'Entrada anual',
+                    labelStyle: TextStyle(color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.grey[300],
+                    enabled: false,
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: provider.fechaActualController,
+                  decoration: InputDecoration(
+                    labelText: 'Fecha actual',
+                    labelStyle: TextStyle(color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.grey[300],
+                    enabled: false,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
+}

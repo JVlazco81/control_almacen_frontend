@@ -4,6 +4,8 @@ import 'package:control_almacen_frontend/screens/historial_view.dart';
 import 'package:control_almacen_frontend/screens/login.dart';
 import 'package:control_almacen_frontend/screens/salidas_art.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:control_almacen_frontend/providers/entradas_provider.dart';
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
 
 /*void main() {
@@ -18,7 +20,14 @@ import 'package:control_almacen_frontend/screens/bienvenida.dart';
 } */
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => EntradasProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

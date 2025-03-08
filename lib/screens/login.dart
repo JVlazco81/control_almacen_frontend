@@ -1,9 +1,9 @@
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
 import 'package:flutter/material.dart';
-import 'package:control_almacen_frontend/screens/bienvenida.dart'; // Asegúrate de que la ruta sea correcta
+// Asegúrate de que la ruta sea correcta
 
 class Login extends StatelessWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class Login extends StatelessWidget {
 }
 
 class _FormContent extends StatefulWidget {
-  const _FormContent({Key? key}) : super(key: key);
+  const _FormContent();
 
   @override
   State<_FormContent> createState() => __FormContentState();

@@ -103,6 +103,7 @@ class __FormContentState extends State<_FormContent> {
                 onPressed: () async {
                   String nombreCompleto = matriculaController.text;
                   List<String> partes = nombreCompleto.split(".");
+
                   if (partes.length < 2) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Formato incorrecto de matrícula")),
@@ -111,10 +112,10 @@ class __FormContentState extends State<_FormContent> {
                   }
 
                   String primerNombre = partes[0];
-                  String segundoNombre = partes[1];
+                  String primerApellido = partes[1];
                   String password = passwordController.text;
 
-                  await authProvider.login(primerNombre, segundoNombre, password);
+                  await authProvider.login(primerNombre, primerApellido, password);
 
                   if (authProvider.isAuthenticated) {
                     Navigator.pushReplacement(
@@ -126,7 +127,7 @@ class __FormContentState extends State<_FormContent> {
                       SnackBar(content: Text("Error en el inicio de sesión")),
                     );
                   }
-                },
+                }
               ),
             ),
           ],

@@ -5,10 +5,10 @@ import '../core/api.dart';
 import '../models/user.dart';
 
 class AuthService {
-  // Iniciar sesión y obtener token
+  // Iniciar sesión y obtener token + usuario
   static Future<bool> login(User user) async {
     String baseUrl = await ApiConfig.getBaseUrl();
-    final loginresponse = await http.post(
+    final response = await http.post(
       Uri.parse("$baseUrl/auth/login"),
       headers: {
         "Content-Type": "application/json",
@@ -17,28 +17,40 @@ class AuthService {
       body: jsonEncode(user.toJson()),
     );
 
-    print("Status Code: ${loginresponse.statusCode}");
-    print("Response Body: ${loginresponse.body}");
-    print("📢 URL de la API: $baseUrl/auth/login");
+    print("Status Code: ${response.statusCode}");
+    print("Response Body: ${response.body}");
 
-    if (loginresponse.statusCode == 200) {
-      final data = jsonDecode(loginresponse.body);
-      String token = data['token'];
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
 
+      // Guardar token y usuario en SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString("auth_token", token);
+      await prefs.setString("access_token", data["access_token"]);
+      await prefs.setString("user_data", jsonEncode(data["user"]));
+
       return true;
     }
     return false;
   }
 
-  //  Obtener token guardado
+  // Obtener token guardado
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("auth_token");
+    return prefs.getString("access_token");
   }
 
-  // Cerrar sesión y eliminar token
+  // Obtener datos del usuario
+  static Future<User?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? userData = prefs.getString("user_data");
+
+    if (userData != null) {
+      return User.fromJson(jsonDecode(userData));
+    }
+    return null;
+  }
+
+  // Cerrar sesión y eliminar datos guardados
   static Future<void> logout() async {
     String? token = await getToken();
     if (token != null) {
@@ -46,13 +58,13 @@ class AuthService {
       await http.post(
         Uri.parse("$baseUrl/auth/logout"),
         headers: {
-          "Content-Type": "application/json",
           "Authorization": "Bearer $token",
         },
       );
     }
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("auth_token");
+    await prefs.remove("access_token");
+    await prefs.remove("user_data");
   }
 }

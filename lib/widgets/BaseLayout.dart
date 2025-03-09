@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
 
 class BaseLayout extends StatefulWidget {
   final Widget bodyContent;
@@ -130,6 +129,14 @@ class _BaseLayoutState extends State<BaseLayout> {
             Icons.people,
             '/usuarios',
           ),
+
+          const Spacer(), // Esto empuja el icono de logout hacia abajo
+          _buildDrawerTile(
+            context,
+            'Cerrar Sesión',
+            Icons.logout,
+            '',
+          ), // Logout
         ],
       ),
     );
@@ -157,6 +164,9 @@ class _BaseLayoutState extends State<BaseLayout> {
             '/historial',
           ),
           _buildSidebarOption(Icons.people, 'Gestión de Usuarios', '/usuarios'),
+
+          const Spacer(), // Empuja el botón de logout al final
+          _buildSidebarOption(Icons.logout, 'Cerrar Sesión', ''), // Logout
         ],
       ),
     );
@@ -170,15 +180,15 @@ class _BaseLayoutState extends State<BaseLayout> {
       child: Column(
         children: [
           Image.asset(
-            'assets/images/DropboxLogo.png', // 📌 Cambia esto por el nombre real de tu imagen
-            width: 100, // Ajusta el tamaño según sea necesario
+            'assets/images/DropboxLogo.png',
+            width: 100,
             height: 100,
             color: Colors.white,
             colorBlendMode: BlendMode.srcIn,
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 8),
-          Text(
+          const Text(
             'Control Almacén',
             style: TextStyle(
               color: Colors.white,

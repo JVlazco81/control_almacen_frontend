@@ -9,7 +9,7 @@ class AuthService {
   static Future<bool> login(User user) async {
     String baseUrl = await ApiConfig.getBaseUrl();
     final response = await http.post(
-      Uri.parse("$baseUrl/auth/login"),
+      Uri.parse("$baseUrl/login"),
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -56,7 +56,7 @@ class AuthService {
     if (token != null) {
       String baseUrl = await ApiConfig.getBaseUrl();
       await http.post(
-        Uri.parse("$baseUrl/auth/logout"),
+        Uri.parse("$baseUrl/logout"),
         headers: {
           "Authorization": "Bearer $token",
         },

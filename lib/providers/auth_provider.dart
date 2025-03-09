@@ -13,10 +13,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Iniciar sesión y actualizar estado
-  Future<void> login(String primerNombre, String segundoNombre, String password) async {
+  Future<void> login(String primerNombre, String primerApellido, String password) async {
     User user = User(
       primerNombre: primerNombre,
-      segundoNombre: segundoNombre,
+      primerApellido: primerApellido,
       password: password,
     );
 

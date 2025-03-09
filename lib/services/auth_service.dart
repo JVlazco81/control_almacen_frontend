@@ -5,17 +5,24 @@ import '../core/api.dart';
 import '../models/user.dart';
 
 class AuthService {
-  // 🔹 Iniciar sesión y obtener token
+  // Iniciar sesión y obtener token
   static Future<bool> login(User user) async {
     String baseUrl = await ApiConfig.getBaseUrl();
-    final response = await http.post(
+    final loginresponse = await http.post(
       Uri.parse("$baseUrl/auth/login"),
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        //"Accept": "application/json",
+      },
       body: jsonEncode(user.toJson()),
     );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+    print("Status Code: ${loginresponse.statusCode}");
+    print("Response Body: ${loginresponse.body}");
+    print("📢 URL de la API: $baseUrl/auth/login");
+
+    if (loginresponse.statusCode == 200) {
+      final data = jsonDecode(loginresponse.body);
       String token = data['token'];
 
       final prefs = await SharedPreferences.getInstance();

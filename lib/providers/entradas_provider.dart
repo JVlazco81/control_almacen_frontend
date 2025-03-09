@@ -108,7 +108,7 @@ class EntradasProvider extends ChangeNotifier {
   void editarArticulo(int index) {
     Map<String, dynamic> articulo = listaEspera[index];
 
-    claveProductoSeleccionada = articulo["clasificacion"];
+    claveProductoSeleccionada = articulo["claveProducto"];
     nombreDescripcionController.text = articulo["descripcion"];
     marcaAutorController.text = articulo["marcaAutor"];
     unidadMedidaSeleccionada = articulo["unidad"];

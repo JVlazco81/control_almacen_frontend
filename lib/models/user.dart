@@ -1,11 +1,11 @@
 class User {
   final String primerNombre;
-  final String segundoNombre;
+  final String primerApellido;
   final String password;
 
   User({
     required this.primerNombre,
-    required this.segundoNombre,
+    required this.primerApellido,
     required this.password,
   });
 
@@ -13,7 +13,7 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       "primer_nombre": primerNombre,
-      "segundo_nombre": segundoNombre,
+      "primer_apellido": primerApellido,
       "password": password,
     };
   }

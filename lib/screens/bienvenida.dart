@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
 
 class Bienvenida extends StatelessWidget {
   const Bienvenida({super.key});
 
+  String obtenerNombreRol(int idRol) {
+    switch (idRol) {
+      case 1:
+        return "Almacenista";
+      case 2:
+        return "Director";
+      default:
+        return "Usuario";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Obtenemos las dimensiones de la pantalla para hacer ajustes responsivos
     var screenWidth = MediaQuery.of(context).size.width;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.currentUser;
 
     return BaseLayout(
       // Aquí pasas el contenido de la vista Bienvenida como un widget al Body del BaseLayout
@@ -48,16 +63,9 @@ class Bienvenida extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Buenos días,',
-                                style: TextStyle(
-                                  fontSize:
-                                      screenWidth *
-                                      0.05, // Ajuste dinámico del tamaño de la fuente
-                                  color: Colors.grey[300],
-                                ),
-                              ),
-                              Text(
-                                'Director [NOMBRE DEL USUARIO]',
+                                user != null
+                                    ? "Buenos días, ${obtenerNombreRol(user.idRol)} ${user.primerNombre}"
+                                    : "Cargando usuario...",
                                 style: TextStyle(
                                   fontSize:
                                       screenWidth *
@@ -83,16 +91,6 @@ class Bienvenida extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ),
-                  ),
-
-                  // Texto en la parte inferior izquierda
-                  Positioned(
-                    bottom: 30,
-                    left: 30,
-                    child: Text(
-                      'LOGO - NOMBRE DEL SISTEMA',
-                      style: TextStyle(fontSize: 24, color: Colors.grey[400]),
                     ),
                   ),
                 ],

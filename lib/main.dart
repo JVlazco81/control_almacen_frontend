@@ -1,5 +1,6 @@
 import 'package:control_almacen_frontend/screens/entradas_art.dart';
 import 'package:control_almacen_frontend/screens/existencias_view.dart';
+import 'package:control_almacen_frontend/screens/gestion_usuarios.dart';
 import 'package:control_almacen_frontend/screens/historial_view.dart';
 import 'package:control_almacen_frontend/screens/login.dart';
 import 'package:control_almacen_frontend/screens/salidas_art.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/historial': (context) => Historial_View(),
         '/entrada': (context) => Entradas_Art(),
         '/salida': (context) => Salidas_Art(),
+        '/usuarios': (context) => Gestion_Usuarios(),
       },
       //home: HomeScreen(),
     );

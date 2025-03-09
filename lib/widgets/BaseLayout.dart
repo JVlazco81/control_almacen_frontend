@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-
-/*
-Este archivo contiene un widget que implementa un diseño base para la aplicación (Se muestra en todas las vistas sin excepción).
-El diseño consta de un Sidebar (Aside de escritorio), que se muestran en pantallas grandes,
-y un Drawer (Aside de móviles) y un AppBar (Barra de navegación superiro que permite mostrar el menú de hamburguesa), que se muestran en pantallas pequeñas.
-El Sidebar y el Drawer contienen opciones de navegación a las diferentes vistas de la aplicación.
-*/
+import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
 
 class BaseLayout extends StatefulWidget {
   final Widget bodyContent;
@@ -17,9 +11,38 @@ class BaseLayout extends StatefulWidget {
 }
 
 class _BaseLayoutState extends State<BaseLayout> {
-  bool _isValeExpanded = false; // Solo mantenemos la expansión del submenú
+  bool _isValeExpanded = false;
+  String _selectedMenu = "";
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    String? currentRoute = ModalRoute.of(context)?.settings.name;
+
+    setState(() {
+      switch (currentRoute) {
+        case '/existencias':
+          _selectedMenu = "Existencias";
+          break;
+        case '/entrada':
+          _selectedMenu = "Entrada";
+          break;
+        case '/salida':
+          _selectedMenu = "Salida";
+          break;
+        case '/historial':
+          _selectedMenu = "Historial de Vales";
+          break;
+        case '/usuarios':
+          _selectedMenu = "Gestión de Usuarios";
+          break;
+        default:
+          _selectedMenu = "";
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +51,6 @@ class _BaseLayoutState extends State<BaseLayout> {
         bool isMobile = constraints.maxWidth < 600;
         return Scaffold(
           key: _scaffoldKey,
-          // Restauramos el AppBar solo para pantallas móviles
           appBar:
               isMobile
                   ? AppBar(
@@ -36,21 +58,15 @@ class _BaseLayoutState extends State<BaseLayout> {
                     leading: IconButton(
                       icon: const Icon(Icons.menu),
                       onPressed: () {
-                        _scaffoldKey.currentState
-                            ?.openDrawer(); // Abre el Drawer
+                        _scaffoldKey.currentState?.openDrawer();
                       },
                     ),
                   )
-                  : null, // No mostramos el AppBar en pantallas grandes
-          drawer:
-              isMobile
-                  ? _buildDrawer(context)
-                  : null, // Drawer en pantallas pequeñas
-
+                  : null,
+          drawer: isMobile ? _buildDrawer(context) : null,
           body: Row(
             children: [
-              if (!isMobile)
-                _buildSidebar(), // Sidebar solo en pantallas grandes
+              if (!isMobile) _buildSidebar(),
               Expanded(
                 child: Column(
                   children: [
@@ -80,15 +96,15 @@ class _BaseLayoutState extends State<BaseLayout> {
 
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
-      child: ListView(
+      child: Column(
         children: [
-          _buildDrawerTile(context, 'existenciasView', Icons.inventory, () {
-            setState(() {
-              _isValeExpanded = false; // Cierra cualquier submenú desplegado
-            });
-            Navigator.pushReplacementNamed(context, '/existencias');
-            _scaffoldKey.currentState?.closeDrawer();
-          }),
+          _buildDrawerHeader(),
+          _buildDrawerTile(
+            context,
+            'Existencias',
+            Icons.inventory,
+            '/existencias',
+          ),
           ListTile(
             leading: const Icon(Icons.assignment),
             title: const Text('Vales'),
@@ -99,13 +115,21 @@ class _BaseLayoutState extends State<BaseLayout> {
             },
           ),
           if (_isValeExpanded) ...[
-            _buildDrawerTile(context, 'Entrada', Icons.input, () {
-              Navigator.pushReplacementNamed(context, '/entrada');
-            }),
-            _buildDrawerTile(context, 'Salida', Icons.output, () {
-              Navigator.pushReplacementNamed(context, '/salida');
-            }),
+            _buildDrawerTile(context, 'Entrada', Icons.input, '/entrada'),
+            _buildDrawerTile(context, 'Salida', Icons.output, '/salida'),
           ],
+          _buildDrawerTile(
+            context,
+            'Historial de Vales',
+            Icons.history,
+            '/historial',
+          ),
+          _buildDrawerTile(
+            context,
+            'Gestión de Usuarios',
+            Icons.people,
+            '/usuarios',
+          ),
         ],
       ),
     );
@@ -113,77 +137,166 @@ class _BaseLayoutState extends State<BaseLayout> {
 
   Widget _buildSidebar() {
     return Container(
-      width: 250,
-      color: Colors.grey[850],
+      width: 270,
+      color: Colors.grey[900],
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
-          _buildSidebarOption(Icons.inventory, 'Existencias', () {
-            setState(() {
-              _isValeExpanded = false;
-            });
-            Navigator.pushReplacementNamed(context, '/existencias');
-          }),
-          const SizedBox(height: 20),
-          _buildSidebarOption(Icons.assignment, 'Gestión de Productos', () {
-            setState(() {
-              _isValeExpanded = !_isValeExpanded; // Toggle del submenú
-            });
-          }),
-          if (_isValeExpanded) ...[
-            const SizedBox(height: 10),
-            _buildSidebarOption(Icons.input, 'Entrada', () {
-              Navigator.pushReplacementNamed(context, '/entrada');
-            }),
-            const SizedBox(height: 10),
-            _buildSidebarOption(Icons.output, 'Salida', () {
-              Navigator.pushReplacementNamed(context, '/salida');
-            }),
-          ],
-          const SizedBox(height: 20),
-          _buildSidebarOption(Icons.history, 'Historial de vales', () {
-            setState(() {
-              _isValeExpanded = false;
-            });
-            Navigator.pushReplacementNamed(context, '/historial');
-          }),
+          _buildSidebarHeader(),
+          _buildSidebarOption(Icons.inventory, 'Existencias', '/existencias'),
+          _buildSidebarExpandableOption(
+            Icons.assignment,
+            'Gestión de Productos',
+            [
+              _buildSidebarOption(Icons.input, 'Entrada', '/entrada'),
+              _buildSidebarOption(Icons.output, 'Salida', '/salida'),
+            ],
+          ),
+          _buildSidebarOption(
+            Icons.history,
+            'Historial de Vales',
+            '/historial',
+          ),
+          _buildSidebarOption(Icons.people, 'Gestión de Usuarios', '/usuarios'),
         ],
       ),
     );
   }
 
-  // Esta función crea una opción en el Sidebar con ícono y texto
-  Widget _buildSidebarOption(
+  Widget _buildSidebarHeader() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      color: const Color.fromARGB(255, 100, 18, 9),
+      child: Column(
+        children: [
+          Image.asset(
+            'assets/images/DropboxLogo.png', // 📌 Cambia esto por el nombre real de tu imagen
+            width: 100, // Ajusta el tamaño según sea necesario
+            height: 100,
+            color: Colors.white,
+            colorBlendMode: BlendMode.srcIn,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Control Almacén',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSidebarOption(IconData icon, String title, String route) {
+    bool isSelected = _selectedMenu == title;
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushReplacementNamed(context, route);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? const Color.fromARGB(255, 145, 120, 37)
+                  : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: isSelected ? Colors.white : Colors.grey[400]),
+            const SizedBox(width: 10),
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.grey[400],
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSidebarExpandableOption(
     IconData icon,
     String title,
-    VoidCallback onPressed,
+    List<Widget> children,
   ) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: Icon(icon, color: Colors.white, size: 40),
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _isValeExpanded = !_isValeExpanded;
+            });
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: Colors.grey[400]),
+                const SizedBox(width: 10),
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                const Spacer(),
+                Icon(
+                  _isValeExpanded ? Icons.expand_less : Icons.expand_more,
+                  color: Colors.grey[400],
+                ),
+              ],
+            ),
           ),
-          const SizedBox(width: 10),
+        ),
+        if (_isValeExpanded) ...children,
+      ],
+    );
+  }
+
+  Widget _buildDrawerHeader() {
+    return DrawerHeader(
+      decoration: BoxDecoration(color: Colors.deepPurple[700]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Icon(Icons.store, size: 50, color: Colors.white),
+          SizedBox(height: 10),
           Text(
-            title,
-            style: const TextStyle(color: Colors.white, fontSize: 18),
+            'Almacén Control',
+            style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ],
       ),
     );
   }
 
-  // Esta función crea las opciones del Drawer
   Widget _buildDrawerTile(
     BuildContext context,
     String title,
     IconData icon,
-    VoidCallback onTap,
+    String route,
   ) {
-    return ListTile(leading: Icon(icon), title: Text(title), onTap: onTap);
+    return ListTile(
+      leading: Icon(icon, color: Colors.grey[800]),
+      title: Text(title),
+      selected: _selectedMenu == title,
+      selectedTileColor: Colors.deepPurple[300],
+      onTap: () {
+        Navigator.pushReplacementNamed(context, route);
+      },
+    );
   }
 }

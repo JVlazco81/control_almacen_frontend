@@ -85,7 +85,10 @@ class __FormContentState extends State<_FormContent> {
               ),
             ),
             const SizedBox(height: 16),
-            SizedBox(
+
+            authProvider.isLoading
+            ? const CircularProgressIndicator()
+            :SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+import '../screens/login.dart';
 
 class BaseLayout extends StatefulWidget {
   final Widget bodyContent;
@@ -41,6 +44,68 @@ class _BaseLayoutState extends State<BaseLayout> {
           _selectedMenu = "";
       }
     });
+  }
+
+  //MOSTRAR EL DIÁLOGO DE CONFIRMACIÓN
+  void _confirmarLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Consumer<AuthProvider>(
+          builder: (context, authProvider, child) {
+            return AlertDialog(
+              title: const Text("Confirmación"),
+              content: const Text("¿Estás seguro de que deseas cerrar sesión?"),
+              actions: [
+                TextButton(
+                  onPressed: authProvider.isLoading
+                      ? null
+                      : () {
+                          Navigator.of(context).pop();
+                        },
+                  child: const Text("Cancelar"),
+                ),
+                ElevatedButton(
+                  onPressed: authProvider.isLoading
+                      ? null
+                      : () async {
+                          await authProvider.logout();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Login()),
+                            (route) => false, // Elimina todas las rutas anteriores
+                          );
+                        },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  child: authProvider.isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text("Cerrar sesión", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+  // BOTÓN DE CERRAR SESIÓN
+  Widget _buildLogoutTile(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.logout, color: Colors.red),
+      title: const Text('Cerrar Sesión'),
+      onTap: () {
+        _confirmarLogout(context);
+      },
+    );
   }
 
   @override
@@ -166,7 +231,7 @@ class _BaseLayoutState extends State<BaseLayout> {
           _buildSidebarOption(Icons.people, 'Gestión de Usuarios', '/usuarios'),
 
           const Spacer(), // Empuja el botón de logout al final
-          _buildSidebarOption(Icons.logout, 'Cerrar Sesión', ''), // Logout
+          _buildLogoutTile(context), // Botón de Logout
         ],
       ),
     );

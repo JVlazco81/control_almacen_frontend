@@ -4,6 +4,7 @@ import '../models/user.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool isAuthenticated = false;
+  bool isLoading = false; // Nuevo estado para indicar carga
   User? currentUser;
 
   // Verificar autenticación al iniciar la app
@@ -23,6 +24,9 @@ class AuthProvider extends ChangeNotifier {
 
   // Iniciar sesión y actualizar estado
   Future<void> login(String primerNombre, String primerApellido, String password) async {
+    isLoading = true;
+    notifyListeners();
+
     User user = User(
       idUsuario: 0,
       idRol: 0,
@@ -34,16 +38,24 @@ class AuthProvider extends ChangeNotifier {
     );
 
     bool success = await AuthService.login(user);
+    
+    isLoading = false;
     if (success) {
       await checkAuth();
     }
+    notifyListeners();
   }
 
   // Cerrar sesión y actualizar estado
   Future<void> logout() async {
+    isLoading = true;
+    notifyListeners();
+
     await AuthService.logout();
+
     isAuthenticated = false;
     currentUser = null;
+    isLoading = false;
     notifyListeners();
   }
 }

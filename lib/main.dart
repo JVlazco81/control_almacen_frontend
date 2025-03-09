@@ -7,11 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:control_almacen_frontend/providers/entradas_provider.dart';
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
+import 'package:control_almacen_frontend/providers/auth_provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => EntradasProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => EntradasProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
       child: MyApp(),
     ),
   );

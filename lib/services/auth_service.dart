@@ -12,7 +12,7 @@ class AuthService {
       Uri.parse("$baseUrl/auth/login"),
       headers: {
         "Content-Type": "application/json",
-        //"Accept": "application/json",
+        "Accept": "application/json",
       },
       body: jsonEncode(user.toJson()),
     );
@@ -32,13 +32,13 @@ class AuthService {
     return false;
   }
 
-  // 🔹 Obtener token guardado
+  //  Obtener token guardado
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("auth_token");
   }
 
-  // 🔹 Cerrar sesión y eliminar token
+  // Cerrar sesión y eliminar token
   static Future<void> logout() async {
     String? token = await getToken();
     if (token != null) {

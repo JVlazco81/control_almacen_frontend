@@ -82,7 +82,7 @@ class EntradasProvider extends ChangeNotifier {
   void agregarArticulo() {
     if (validarCampos()) {
       listaEspera.add({
-        "clasificacion": claveProductoSeleccionada ?? '',
+        "claveProducto": claveProductoSeleccionada ?? '',
         "descripcion": nombreDescripcionController.text,
         "marcaAutor": marcaAutorController.text,
         "unidad": unidadMedidaSeleccionada ?? '',

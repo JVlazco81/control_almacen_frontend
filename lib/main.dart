@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:control_almacen_frontend/providers/entradas_provider.dart';
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
 import 'package:control_almacen_frontend/providers/auth_provider.dart';
+import 'package:control_almacen_frontend/providers/inventario_provider.dart';
 
 void main() {
   runApp(
@@ -16,6 +17,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => EntradasProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => InventarioProvider()),
       ],
       child: MyApp(),
     ),

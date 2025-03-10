@@ -34,7 +34,7 @@ class Producto {
       categoria: json["categoria"],
       unidad: json["unidad"],
       existencias: json["existencias"],
-      costoPorUnidad: double.parse(json["costo_por_unidad"]),
+      costoPorUnidad: double.parse(json["costo_por_unidad"].replaceAll(",", "")),
       subtotal: double.parse(json["subtotal"].replaceAll(",", "")),
       iva: double.parse(json["iva"].replaceAll(",", "")),
       montoTotal: double.parse(json["monto_total"].replaceAll(",", "")),

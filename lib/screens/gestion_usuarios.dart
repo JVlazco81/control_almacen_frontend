@@ -16,14 +16,27 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
       TextEditingController();
   final TextEditingController matriculaController = TextEditingController();
   final TextEditingController contrasenaController = TextEditingController();
+
+  bool _isPasswordVisible = false;
   String rolSeleccionado = 'Almacenista';
 
-  List<Map<String, String>> usuariosRegistrados = [];
+  // Estados de validación
+  bool _hasMinLength = false;
+  bool _hasUppercase = false;
+  bool _hasNumber = false;
+  bool _hasSpecialChar = false;
+
+  void _validatePassword(String value) {
+    setState(() {
+      _hasMinLength = value.length >= 8;
+      _hasUppercase = RegExp(r'[A-Z]').hasMatch(value);
+      _hasNumber = RegExp(r'[0-9]').hasMatch(value);
+      _hasSpecialChar = RegExp(r'[!@#$%^&*(),.?":{}|<>_/]').hasMatch(value);
+    });
+  }
 
   void _agregarUsuario() {
-    if (primerNombreController.text.isNotEmpty &&
-        apellidoController.text.isNotEmpty &&
-        contrasenaController.text.isNotEmpty) {
+    if (_hasMinLength && _hasUppercase && _hasNumber && _hasSpecialChar) {
       setState(() {
         usuariosRegistrados.add({
           "nombre":
@@ -45,6 +58,8 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
     contrasenaController.clear();
   }
 
+  List<Map<String, String>> usuariosRegistrados = [];
+
   @override
   Widget build(BuildContext context) {
     return BaseLayout(
@@ -59,7 +74,6 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
             ),
             const SizedBox(height: 10),
 
-            // Sección de Registro de Usuarios
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -78,6 +92,7 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                       ),
                     ),
                     const SizedBox(height: 10),
+
                     Row(
                       children: [
                         Expanded(
@@ -101,7 +116,9 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 10),
+
                     Row(
                       children: [
                         Expanded(
@@ -125,9 +142,35 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 10),
+
                     Row(
                       children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: contrasenaController,
+                            obscureText: !_isPasswordVisible,
+                            onChanged: _validatePassword,
+                            decoration: InputDecoration(
+                              labelText: 'Contraseña *',
+                              border: const OutlineInputBorder(),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _isPasswordVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: TextField(
                             controller: matriculaController,
@@ -137,20 +180,36 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: contrasenaController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              labelText: 'Contraseña *',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Indicadores de requisitos de contraseña
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildPasswordRequirement(
+                          _hasMinLength,
+                          "Debe tener al menos 8 caracteres",
+                        ),
+                        _buildPasswordRequirement(
+                          _hasUppercase,
+                          "Debe contener al menos una letra mayúscula",
+                        ),
+                        _buildPasswordRequirement(
+                          _hasNumber,
+                          "Debe contener al menos un número",
+                        ),
+                        _buildPasswordRequirement(
+                          _hasSpecialChar,
+                          "Debe contener al menos un carácter especial (!@#\$%^&*_/)",
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 10),
+
                     DropdownButtonFormField<String>(
                       value: rolSeleccionado,
                       decoration: const InputDecoration(
@@ -172,7 +231,9 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                         });
                       },
                     ),
+
                     const SizedBox(height: 10),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -201,77 +262,30 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                 ),
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            // Lista de Usuarios Registrados
-            Expanded(
-              child: Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Usuarios Registrados',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Expanded(
-                        child:
-                            usuariosRegistrados.isEmpty
-                                ? const Center(
-                                  child: Text(
-                                    "No hay usuarios registrados.",
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                )
-                                : ListView.builder(
-                                  itemCount: usuariosRegistrados.length,
-                                  itemBuilder: (context, index) {
-                                    final usuario = usuariosRegistrados[index];
-                                    return Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      elevation: 2,
-                                      child: ListTile(
-                                        leading: CircleAvatar(
-                                          backgroundColor: Colors.blueAccent,
-                                          child: Text(usuario["nombre"]![0]),
-                                        ),
-                                        title: Text(usuario["nombre"]!),
-                                        subtitle: Text(
-                                          usuario["rol"]!,
-                                          style: TextStyle(
-                                            color:
-                                                usuario["rol"] == "Director"
-                                                    ? Colors.red
-                                                    : Colors.blue,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        trailing: const Icon(Icons.more_vert),
-                                      ),
-                                    );
-                                  },
-                                ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
+    );
+  }
+
+  // Widget para mostrar los requisitos de la contraseña
+  Widget _buildPasswordRequirement(bool isValid, String text) {
+    return Row(
+      children: [
+        Icon(
+          isValid ? Icons.check_circle : Icons.cancel,
+          color: isValid ? Colors.green : Colors.red,
+          size: 18,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: TextStyle(
+            color: isValid ? Colors.green : Colors.red,
+            fontSize: 14,
+          ),
+        ),
+      ],
     );
   }
 }

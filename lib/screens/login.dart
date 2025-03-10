@@ -12,29 +12,33 @@ class Login extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: isSmallScreen
-            ? Column(mainAxisSize: MainAxisSize.min, children: const [_FormContent()])
-            : Container(
-                padding: const EdgeInsets.all(70.0),
-                constraints: const BoxConstraints(maxWidth: 800),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Image.asset(
-                          'assets/images/DropboxLogo.png',
-                          width: 150,
-                          height: 150,
-                          color: Colors.black,
-                          colorBlendMode: BlendMode.srcIn,
-                          fit: BoxFit.contain,
+        child:
+            isSmallScreen
+                ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [_FormContent()],
+                )
+                : Container(
+                  padding: const EdgeInsets.all(70.0),
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/DropboxLogo.png',
+                            width: 150,
+                            height: 150,
+                            color: Colors.black,
+                            colorBlendMode: BlendMode.srcIn,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
-                    ),
-                    const Expanded(child: Center(child: _FormContent())),
-                  ],
+                      const Expanded(child: Center(child: _FormContent())),
+                    ],
+                  ),
                 ),
-              ),
       ),
     );
   }
@@ -51,6 +55,26 @@ class __FormContentState extends State<_FormContent> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController matriculaController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Ingrese su contraseña';
+    }
+    if (value.length < 8) {
+      return 'Debe tener al menos 8 caracteres';
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return 'Debe contener al menos una letra mayúscula';
+    }
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return 'Debe contener al menos un número';
+    }
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>_/]').hasMatch(value)) {
+      return 'Debe contener al menos un carácter especial (!@#\$%^&*_/)';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,19 +100,29 @@ class __FormContentState extends State<_FormContent> {
             const SizedBox(height: 16),
             TextFormField(
               controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
+              obscureText: !_isPasswordVisible,
+              validator: _validatePassword,
+              decoration: InputDecoration(
                 labelText: 'Contraseña',
                 hintText: 'Ingrese su contraseña',
-                prefixIcon: Icon(Icons.lock_outline_rounded),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 16),
-
-            authProvider.isLoading
-            ? const CircularProgressIndicator()
-            :SizedBox(
+            SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -104,12 +138,18 @@ class __FormContentState extends State<_FormContent> {
                   ),
                 ),
                 onPressed: () async {
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
+
                   String nombreCompleto = matriculaController.text;
                   List<String> partes = nombreCompleto.split(".");
 
                   if (partes.length < 2) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Formato incorrecto de matrícula")),
+                      const SnackBar(
+                        content: Text("Formato incorrecto de matrícula"),
+                      ),
                     );
                     return;
                   }
@@ -118,19 +158,27 @@ class __FormContentState extends State<_FormContent> {
                   String primerApellido = partes[1];
                   String password = passwordController.text;
 
-                  await authProvider.login(primerNombre, primerApellido, password);
+                  await authProvider.login(
+                    primerNombre,
+                    primerApellido,
+                    password,
+                  );
 
                   if (authProvider.isAuthenticated) {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Bienvenida()),
+                      MaterialPageRoute(
+                        builder: (context) => const Bienvenida(),
+                      ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Error en el inicio de sesión")),
+                      const SnackBar(
+                        content: Text("Error en el inicio de sesión"),
+                      ),
                     );
                   }
-                }
+                },
               ),
             ),
           ],

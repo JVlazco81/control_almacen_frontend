@@ -1,16 +1,42 @@
 import 'package:flutter/material.dart';
+import '../services/entrada_service.dart';
 import '../models/entrada.dart';
 
 class EntradasProvider extends ChangeNotifier {
-  List<String> clavesProducto = [
-    'Clasificación 1',
-    'Clasificación 2',
-    'Clasificación 3',
-    'Clasificación Especial',
-    'Otra Clasificación',
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  void setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners(); // Notifica a la UI para que se actualicen los botones
+  }
+  
+  List<Map<String, String>> clavesProducto = [
+    {"id": "2111", "nombre": "Materiales, útiles y equipos menores de oficina"},
+    {"id": "2121", "nombre": "Materiales y útiles de impresión y reproducción"},
+    {"id": "2122", "nombre": "Material fotográfico, cinematografía y grabación"},
+    {"id": "2131", "nombre": "Material estadístico y geográfico"},
+    {"id": "2141", "nombre": "Materiales, útiles, equipos y bienes informáticos"},
+    {"id": "2151", "nombre": "Material impreso e información digital"},
+    {"id": "2161", "nombre": "Material de limpieza"},
+    {"id": "2171", "nombre": "Materiales y útiles de enseñanza"},
+    {"id": "2181", "nombre": "Materiales para el registro e identificación de bienes y personas"},
+    {"id": "2211", "nombre": "Productos alimenticios para personas"},
+    {"id": "2221", "nombre": "Productos alimenticios para animales"},
   ];
 
-  List<String> unidadesMedida = ['PZA', 'CAJA', 'PAQUETE'];
+  List<String> unidadesMedida = ['Caja', 'Paquete', 'Pieza'];
+
+  void setClaveProducto(Map<String, String>? value) {
+    claveProductoSeleccionada = value;
+    notifyListeners();
+  }
+
+  void setUnidadMedida(String? value) {
+    unidadMedidaSeleccionada = value;
+    notifyListeners(); // Notifica a la UI para actualizar el select
+  }
+
+  Map<String, String>? claveProductoSeleccionada;
   
   // Controladores de texto
   final TextEditingController folioController = TextEditingController();
@@ -31,8 +57,8 @@ class EntradasProvider extends ChangeNotifier {
   final TextEditingController totalArticuloController = TextEditingController();
 
   // Variables de estado
-  String? claveProductoSeleccionada;
   String? unidadMedidaSeleccionada;
+
   double cantidad = 0;
   double costoUnitario = 0;
   double totalArticulo = 0;
@@ -79,13 +105,13 @@ class EntradasProvider extends ChangeNotifier {
   }
 
   // Agregar artículo a la lista de espera
-  void agregarArticulo() {
+  void agregarProducto() {
     if (validarCampos()) {
       listaEspera.add({
-        "claveProducto": claveProductoSeleccionada ?? '',
+        "claveProducto": claveProductoSeleccionada?["id"].toString(),
         "descripcion": nombreDescripcionController.text,
         "marcaAutor": marcaAutorController.text,
-        "unidad": unidadMedidaSeleccionada ?? '',
+        "unidad": unidadMedidaSeleccionada.toString(),
         "cantidad": cantidadController.text,
         "costo": costoUnidadController.text,
         "total": totalArticulo.toStringAsFixed(2),
@@ -108,7 +134,10 @@ class EntradasProvider extends ChangeNotifier {
   void editarArticulo(int index) {
     Map<String, dynamic> articulo = listaEspera[index];
 
-    claveProductoSeleccionada = articulo["claveProducto"];
+    claveProductoSeleccionada = clavesProducto.firstWhere(
+      (item) => item["id"] == articulo["claveProducto"],
+      orElse: () => {"id": "", "nombre": ""}
+    );
     nombreDescripcionController.text = articulo["descripcion"];
     marcaAutorController.text = articulo["marcaAutor"];
     unidadMedidaSeleccionada = articulo["unidad"];
@@ -150,17 +179,10 @@ class EntradasProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setClaveProducto(String? value) {
-    claveProductoSeleccionada = value;
-    notifyListeners(); // Notifica a la UI para actualizar el select
-  }
+  Future<Map<String, dynamic>> subirInventario() async {
+    _isLoading = true;
+    notifyListeners();
 
-  void setUnidadMedida(String? value) {
-    unidadMedidaSeleccionada = value;
-    notifyListeners(); // Notifica a la UI para actualizar el select
-  }
-
-  String generarJsonEntrada() {
     Entrada entrada = Entrada(
       proveedor: proveedorController.text,
       fechaFactura: fechaFacturaController.text,
@@ -169,6 +191,14 @@ class EntradasProvider extends ChangeNotifier {
       productos: List<Map<String, dynamic>>.from(listaEspera),
     );
 
-    return entrada.toJsonString();
+    // Imprimir el JSON que se enviará al backend
+    String jsonEntrada = entrada.toJsonString();
+    print("📤 JSON Enviado al backend: $jsonEntrada");
+
+    final result = await EntradaService.subirInventario(jsonEntrada);
+
+    _isLoading = false;
+    notifyListeners();
+    return result;
   }
 }

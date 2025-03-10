@@ -27,6 +27,7 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString("access_token", data["access_token"]);
       await prefs.setString("user_data", jsonEncode(data["user"]));
+      print("🔍 Token guardado en SharedPreferences: ${prefs.getString("auth_token")}");
 
       return true;
     }

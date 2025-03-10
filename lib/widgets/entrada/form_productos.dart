@@ -26,14 +26,14 @@ class FormProductos extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: DropdownSearch<String>(
+                child: 
+                DropdownSearch<Map<String, String>>(
                   items: provider.clavesProducto,
+                  itemAsString: (item) => "${item?['id']} - ${item?['nombre']}",
                   selectedItem: provider.claveProductoSeleccionada,
                   popupProps: PopupProps.menu(showSearchBox: true),
                   dropdownDecoratorProps: DropDownDecoratorProps(
-                    dropdownSearchDecoration: InputDecoration(
-                      labelText: 'Clave del producto',
-                    ),
+                    dropdownSearchDecoration: InputDecoration(labelText: 'Clave del producto'),
                   ),
                   onChanged: provider.setClaveProducto,
                 ),
@@ -58,11 +58,12 @@ class FormProductos extends StatelessWidget {
               ),
               SizedBox(width: 10),
               Expanded(
-                child: DropdownButtonFormField<String>(
+                child: 
+                DropdownButtonFormField<String>(
                   value: provider.unidadMedidaSeleccionada,
                   items: provider.unidadesMedida
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
                   decoration: InputDecoration(labelText: 'Unidad de medida'),
                   onChanged: provider.setUnidadMedida,
                 ),
@@ -134,7 +135,7 @@ class FormProductos extends StatelessWidget {
                   }
 
                   // agregar a lista de espera si pasa la validación
-                  provider.agregarArticulo();
+                  provider.agregarProducto();
                 },
                 child: Text('Agregar a espera'),
               ),

@@ -62,7 +62,7 @@ class TablaEspera extends StatelessWidget {
                   Map<String, dynamic> articulo = entry.value;
                   return TableRow(
                     children: [
-                      TableCellWidget(text: articulo["clasificacion"]),
+                      TableCellWidget(text: articulo["claveProducto"]),
                       TableCellWidget(text: articulo["descripcion"]),
                       TableCellWidget(text: articulo["marcaAutor"]),
                       TableCellWidget(text: articulo["unidad"]),
@@ -185,37 +185,81 @@ class TablaEspera extends StatelessWidget {
   void _mostrarDialogoSubirInventario(BuildContext context, EntradasProvider provider) {
     showDialog(
       context: context,
+      barrierDismissible: false, // Evita que se cierre sin confirmar
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirmación"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Estás a punto de subir estos productos al inventario:\n"),
-              ...provider.listaEspera.map((producto) => Text(
-                    "${producto["descripcion"]}  x ${producto["cantidad"]}",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Cancelar"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String jsonEntrada = provider.generarJsonEntrada();
-                print(jsonEntrada); //  Mostrar en consola
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: Text("Subir al inventario", style: TextStyle(color: Colors.white)),
-            ),
-          ],
+        return Consumer<EntradasProvider>(
+          builder: (context, provider, child) {
+            return AlertDialog(
+              title: Text("Confirmación"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Estás a punto de subir estos productos al inventario:\n"),
+                  ...provider.listaEspera.map((producto) => Text(
+                        "${producto["descripcion"]}  x ${producto["cantidad"]}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: provider.isLoading
+                      ? null // 🔹 Se deshabilita cuando `isLoading` es `true`
+                      : () {
+                          if (context.mounted) {
+                            Navigator.of(context).pop(); // Cierra la confirmación
+                          }
+                        },
+                  child: Text("Cancelar"),
+                ),
+                ElevatedButton(
+                  onPressed: provider.isLoading
+                      ? null
+                      : () async {
+                          provider.setLoading(true);
+                          provider.notifyListeners(); // 🔹 Notifica cambios antes de la petición
+
+                          final result = await provider.subirInventario(); // Hace la petición
+
+                          provider.setLoading(false);
+                          provider.notifyListeners(); // 🔹 Notifica cambios después de la petición
+
+                          if (context.mounted) {
+                            Navigator.of(context).pop(); // Cierra la confirmación
+
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(result["success"] ? "Éxito" : "Error"),
+                                  content: Text(result["success"]
+                                      ? "Productos subidos correctamente."
+                                      : "Ocurrió un error: ${result["message"]}"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        if (context.mounted) {
+                                          Navigator.of(context).pop(); // Cierra el resultado
+                                          provider.reiniciarFormulario();
+                                        }
+                                      },
+                                      child: Text("Cerrar"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  child: provider.isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text("Subir al inventario", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            );
+          },
         );
       },
     );

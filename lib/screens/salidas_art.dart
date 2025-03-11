@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
+import '../services/auth_service.dart';
 
 class Salidas_Art extends StatefulWidget {
   const Salidas_Art({super.key});
@@ -11,6 +12,15 @@ class Salidas_Art extends StatefulWidget {
 }
 
 class _Salidas_ArtState extends State<Salidas_Art> {
+  void _verificarSesion() async {
+    String? token = await AuthService.getToken();
+    if (token == null) {
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed("/");
+      }
+    }
+  }
+
   TextEditingController fechaActualController = TextEditingController();
   TextEditingController cantidadSalidaController = TextEditingController(
     text: "1",
@@ -27,6 +37,7 @@ class _Salidas_ArtState extends State<Salidas_Art> {
   @override
   void initState() {
     super.initState();
+    _verificarSesion();
     fechaActualController.text =
         "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
   }

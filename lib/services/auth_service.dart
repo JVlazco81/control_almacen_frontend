@@ -27,7 +27,7 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString("access_token", data["access_token"]);
       await prefs.setString("user_data", jsonEncode(data["user"]));
-      print("🔍 Token guardado en SharedPreferences: ${prefs.getString("auth_token")}");
+      print("🔍 Token guardado en SharedPreferences: ${prefs.getString("access_token")}");
 
       return true;
     }
@@ -37,7 +37,9 @@ class AuthService {
   // Obtener token guardado
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("access_token");
+    String? token = prefs.getString("access_token");
+    print("🔹 Token en SharedPreferences: $token"); // Verifica si el token está guardado
+    return token;
   }
 
   // Obtener datos del usuario

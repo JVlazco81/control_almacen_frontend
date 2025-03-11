@@ -141,7 +141,7 @@ class FormProductos extends StatelessWidget {
               ),
 
               ElevatedButton(
-                onPressed: provider.limpiarCamposProducto,
+                onPressed: () => _mostrarDialogoVaciarFormulario(context, provider),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: Text('Vaciar', style: TextStyle(color: Colors.white)),
               ),
@@ -149,6 +149,34 @@ class FormProductos extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _mostrarDialogoVaciarFormulario(BuildContext context, EntradasProvider provider) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirmación"),
+          content: Text("Estás a punto de vaciar el formulario. ¿Deseas continuar?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: Text("Cancelar"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                provider.limpiarCamposProducto();
+                Navigator.of(context).pop(); // Cerrar el diálogo después de limpiar
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: Text("Vaciar", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

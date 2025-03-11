@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/inventario_provider.dart';
 import '../models/producto.dart';
 import '../widgets/BaseLayout.dart';
+import '../services/auth_service.dart';
 
 class Existencias_View extends StatefulWidget {
   const Existencias_View({super.key});
@@ -12,6 +13,15 @@ class Existencias_View extends StatefulWidget {
 }
 
 class _ExistenciasViewState extends State<Existencias_View> {
+  void _verificarSesion() async {
+    String? token = await AuthService.getToken();
+    if (token == null) {
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed("/");
+      }
+    }
+  }
+  
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
   TextEditingController searchController = TextEditingController();
@@ -21,8 +31,9 @@ class _ExistenciasViewState extends State<Existencias_View> {
   List<Producto> productosFiltrados = [];
 
   @override
-  void initState() {
+  void initState() { 
     super.initState();
+    _verificarSesion();
     final provider = Provider.of<InventarioProvider>(context, listen: false);
     provider.cargarInventario().then((_) {
       setState(() {

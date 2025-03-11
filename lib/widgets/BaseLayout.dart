@@ -196,12 +196,14 @@ class _BaseLayoutState extends State<BaseLayout> {
           ),
 
           const Spacer(), // Esto empuja el icono de logout hacia abajo
-          _buildDrawerTile(
-            context,
-            'Cerrar Sesión',
-            Icons.logout,
-            '',
-          ), // Logout
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Cerrar Sesión'),
+            onTap: () {
+              Navigator.pop(context); // Cierra el drawer
+              _confirmarLogout(context);
+            },
+          ),// Logout
         ],
       ),
     );

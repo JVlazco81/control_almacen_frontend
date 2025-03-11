@@ -4,6 +4,7 @@ import '../widgets/entrada/form_informacion.dart';
 import '../widgets/entrada/form_productos.dart';
 import '../widgets/entrada/resumen_totales.dart';
 import '../widgets/entrada/tabla_espera.dart';
+import '../services/auth_service.dart';
 
 
 class Entradas_Art extends StatefulWidget {
@@ -14,6 +15,21 @@ class Entradas_Art extends StatefulWidget {
 }
 
 class _Entradas_ArtState extends State<Entradas_Art> {
+  @override
+  void initState() {
+    super.initState();
+    _verificarSesion();
+  }
+
+  void _verificarSesion() async {
+    String? token = await AuthService.getToken();
+    if (token == null) {
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed("/");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseLayout(

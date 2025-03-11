@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
+import '../services/auth_service.dart';
 
 class Gestion_Usuarios extends StatefulWidget {
   const Gestion_Usuarios({super.key});
@@ -9,6 +10,21 @@ class Gestion_Usuarios extends StatefulWidget {
 }
 
 class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
+  @override
+  void initState() {
+    super.initState();
+    _verificarSesion();
+  }
+
+  void _verificarSesion() async {
+    String? token = await AuthService.getToken();
+    if (token == null) {
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed("/");
+      }
+    }
+  }
+
   final TextEditingController primerNombreController = TextEditingController();
   final TextEditingController segundoNombreController = TextEditingController();
   final TextEditingController apellidoController = TextEditingController();

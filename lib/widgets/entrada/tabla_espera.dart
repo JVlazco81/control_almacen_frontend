@@ -75,7 +75,7 @@ class TablaEspera extends StatelessWidget {
                             if (value == "editar") {
                               provider.editarArticulo(index);
                             } else if (value == "eliminar") {
-                              provider.eliminarArticulo(index);
+                              _mostrarDialogoEliminar(context, provider, index);
                             }
                           },
                           itemBuilder: (context) => [
@@ -181,6 +181,35 @@ class TablaEspera extends StatelessWidget {
       },
     );
   }
+
+  void _mostrarDialogoEliminar(BuildContext context, EntradasProvider provider, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirmación"),
+          content: Text("Estás a punto de eliminar este registro. ¿Deseas continuar?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar la ventana emergente
+              },
+              child: Text("Cancelar"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                provider.eliminarArticulo(index); // 🔹 Elimina el artículo
+                Navigator.of(context).pop(); // 🔹 Cierra la ventana después de eliminar
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: Text("Eliminar", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   void _mostrarDialogoSubirInventario(BuildContext context, EntradasProvider provider) {
     showDialog(

@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiConfig {
-  static String _baseUrl = "http://192.168.1.70:80/api"; // tu ip aqui
+  static String _baseUrl = "http://192.168.1.69:80/api"; // tu ip aqui
 
   static Future<String> getBaseUrl() async {
     final prefs = await SharedPreferences.getInstance();

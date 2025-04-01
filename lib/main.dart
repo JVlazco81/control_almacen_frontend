@@ -10,12 +10,14 @@ import 'package:control_almacen_frontend/providers/entradas_provider.dart';
 import 'package:control_almacen_frontend/screens/bienvenida.dart';
 import 'package:control_almacen_frontend/providers/auth_provider.dart';
 import 'package:control_almacen_frontend/providers/inventario_provider.dart';
+import 'package:control_almacen_frontend/providers/salidas_provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EntradasProvider()),
+        ChangeNotifierProvider(create: (_) => SalidasProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => InventarioProvider()),
       ],

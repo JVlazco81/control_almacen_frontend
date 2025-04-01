@@ -23,4 +23,24 @@ class InventarioProvider extends ChangeNotifier {
     }
     setLoading(false);
   }
+
+  Future<void> actualizarProducto(int id, Map<String, dynamic> data) async {
+    try {
+      await InventarioService.actualizarProducto(id, data);
+      print("✅ Producto actualizado correctamente.");
+    } catch (e) {
+      print("❌ Error al actualizar el producto: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> eliminarProducto(int id) async {
+    try {
+      await InventarioService.eliminarProducto(id);
+      print("🗑️ Producto eliminado correctamente.");
+    } catch (e) {
+      print("❌ Error al eliminar producto: $e");
+      rethrow;
+    }
+  }
 }

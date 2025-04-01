@@ -25,4 +25,44 @@ class InventarioService {
       throw Exception("Error al obtener el inventario: ${response.body}");
     }
   }
+
+  static Future<void> actualizarProducto(
+    int id,
+    Map<String, dynamic> data,
+  ) async {
+    String baseUrl = await ApiConfig.getBaseUrl();
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+
+    final response = await http.patch(
+      Uri.parse("$baseUrl/inventario/$id"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Error al actualizar producto: ${response.body}");
+    }
+  }
+
+  static Future<void> eliminarProducto(int id) async {
+    String baseUrl = await ApiConfig.getBaseUrl();
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+
+    final response = await http.delete(
+      Uri.parse("$baseUrl/inventario/$id"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Error al eliminar producto: ${response.body}");
+    }
+  }
 }

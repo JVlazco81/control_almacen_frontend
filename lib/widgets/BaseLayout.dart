@@ -58,35 +58,44 @@ class _BaseLayoutState extends State<BaseLayout> {
               content: const Text("¿Estás seguro de que deseas cerrar sesión?"),
               actions: [
                 TextButton(
-                  onPressed: authProvider.isLoading
-                      ? null
-                      : () {
-                          Navigator.of(context).pop();
-                        },
+                  onPressed:
+                      authProvider.isLoading
+                          ? null
+                          : () {
+                            Navigator.of(context).pop();
+                          },
                   child: const Text("Cancelar"),
                 ),
                 ElevatedButton(
-                  onPressed: authProvider.isLoading
-                      ? null
-                      : () async {
-                          await authProvider.logout();
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Login()),
-                            (route) => false, // Elimina todas las rutas anteriores
-                          );
-                        },
+                  onPressed:
+                      authProvider.isLoading
+                          ? null
+                          : () async {
+                            await authProvider.logout();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Login(),
+                              ),
+                              (route) =>
+                                  false, // Elimina todas las rutas anteriores
+                            );
+                          },
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: authProvider.isLoading
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
+                  child:
+                      authProvider.isLoading
+                          ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                          : const Text(
+                            "Cerrar sesión",
+                            style: TextStyle(color: Colors.white),
                           ),
-                        )
-                      : const Text("Cerrar sesión", style: TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -95,7 +104,6 @@ class _BaseLayoutState extends State<BaseLayout> {
       },
     );
   }
-
 
   // BOTÓN DE CERRAR SESIÓN
   Widget _buildLogoutTile(BuildContext context) {
@@ -134,19 +142,19 @@ class _BaseLayoutState extends State<BaseLayout> {
               Expanded(
                 child: Column(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      width: double.infinity,
-                      color: const Color.fromARGB(255, 100, 18, 9),
-                      child: const Text(
-                        'HEAD',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFFFFFF),
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   padding: const EdgeInsets.all(20),
+                    //   width: double.infinity,
+                    //   color: const Color.fromARGB(255, 100, 18, 9),
+                    //   child: const Text(
+                    //     'HEAD',
+                    //     style: TextStyle(
+                    //       fontSize: 24,
+                    //       fontWeight: FontWeight.bold,
+                    //       color: Color(0xFFFFFFFF),
+                    //     ),
+                    //   ),
+                    // ),
                     Expanded(child: widget.bodyContent),
                   ],
                 ),
@@ -203,7 +211,7 @@ class _BaseLayoutState extends State<BaseLayout> {
               Navigator.pop(context); // Cierra el drawer
               _confirmarLogout(context);
             },
-          ),// Logout
+          ), // Logout
         ],
       ),
     );

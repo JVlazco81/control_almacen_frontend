@@ -11,8 +11,15 @@ import 'package:control_almacen_frontend/screens/bienvenida.dart';
 import 'package:control_almacen_frontend/providers/auth_provider.dart';
 import 'package:control_almacen_frontend/providers/inventario_provider.dart';
 import 'package:control_almacen_frontend/providers/salidas_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: "assets/env/.env");
+  } catch (e) {
+    print("❌ Error cargando .env: $e");
+  }
   runApp(
     MultiProvider(
       providers: [
@@ -21,7 +28,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => InventarioProvider()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

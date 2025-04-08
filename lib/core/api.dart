@@ -1,16 +1,18 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConfig {
-  static String _baseUrl = "http://192.168.1.76:80/api"; // tu ip aqui
-
-  static Future<String> getBaseUrl() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("api_base_url") ?? _baseUrl;
+  static String get baseUrl {
+    if (!dotenv.isInitialized) {
+      throw Exception("❌ dotenv no ha sido inicializado");
+    }
+    return dotenv.env['API_BASE_URL'] ?? "http://localhost/api";
   }
 
-  // Nuevo método para obtener origen
+  static Future<String> getBaseUrl() async {
+    return baseUrl;
+  }
+
   static Future<String> getOrigin() async {
-    final baseUrl = await getBaseUrl();
     return baseUrl.replaceFirst("/api", "");
   }
 }

@@ -34,10 +34,9 @@ class AuthProvider extends ChangeNotifier {
       segundoNombre: "",
       primerApellido: primerApellido,
       segundoApellido: "",
-      password: password,
     );
 
-    bool success = await AuthService.login(user);
+    bool success = await AuthService.login(user, password);
     
     isLoading = false;
     if (success) {

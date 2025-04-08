@@ -6,7 +6,7 @@ import '../models/user.dart';
 
 class AuthService {
   // Iniciar sesión y obtener token + usuario
-  static Future<bool> login(User user) async {
+  static Future<bool> login(User user, String password) async {
     String baseUrl = await ApiConfig.getBaseUrl();
     final response = await http.post(
       Uri.parse("$baseUrl/login"),
@@ -14,7 +14,7 @@ class AuthService {
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
-      body: jsonEncode(user.toJson()),
+      body: jsonEncode(user.toJsonLogin(password)),
     );
 
     print("Status Code: ${response.statusCode}");
@@ -25,7 +25,7 @@ class AuthService {
 
       // Guardar token y usuario en SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString("access_token", data["access_token"]);
+      await prefs.setString("access_token", data["token"]);
       await prefs.setString("user_data", jsonEncode(data["user"]));
       print("🔍 Token guardado en SharedPreferences: ${prefs.getString("access_token")}");
 

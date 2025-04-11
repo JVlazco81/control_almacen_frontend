@@ -30,9 +30,9 @@ class _BienvenidaState extends State<Bienvenida> {
 
   String obtenerNombreRol(int idRol) {
     switch (idRol) {
-      case 1:
-        return "Director";
       case 2:
+        return "Director";
+      case 1:
         return "Almacenista";
       default:
         return "Usuario";

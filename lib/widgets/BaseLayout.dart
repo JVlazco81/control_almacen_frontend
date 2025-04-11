@@ -196,13 +196,13 @@ class _BaseLayoutState extends State<BaseLayout> {
             Icons.history,
             '/historial',
           ),
-          _buildDrawerTile(
-            context,
-            'Gestión de Usuarios',
-            Icons.people,
-            '/usuarios',
-          ),
-
+          if (Provider.of<AuthProvider>(context, listen: false).currentUser?.idRol == 2)
+            _buildDrawerTile(
+              context,
+              'Gestión de Usuarios',
+              Icons.people,
+              '/usuarios',
+            ),
           const Spacer(), // Esto empuja el icono de logout hacia abajo
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
@@ -238,7 +238,8 @@ class _BaseLayoutState extends State<BaseLayout> {
             'Historial de Vales',
             '/historial',
           ),
-          _buildSidebarOption(Icons.people, 'Gestión de Usuarios', '/usuarios'),
+          if (Provider.of<AuthProvider>(context, listen: false).currentUser?.idRol == 2)
+            _buildSidebarOption(Icons.people, 'Gestión de Usuarios', '/usuarios'),
 
           const Spacer(), // Empuja el botón de logout al final
           _buildLogoutTile(context), // Botón de Logout

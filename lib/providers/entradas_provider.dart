@@ -197,6 +197,15 @@ class EntradasProvider extends ChangeNotifier {
 
     final result = await EntradaService.subirInventario(jsonEntrada);
 
+    if (result["success"] == true && result.containsKey("id_entrada")) {
+      try {
+        int idEntrada = result["id_entrada"];
+        await EntradaService.descargarPDFEntrada(idEntrada);
+      } catch (e) {
+        print("❌ Error al descargar PDF: $e");
+      }
+    }
+
     _isLoading = false;
     notifyListeners();
     return result;

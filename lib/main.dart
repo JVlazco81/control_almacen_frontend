@@ -12,6 +12,7 @@ import 'package:control_almacen_frontend/providers/auth_provider.dart';
 import 'package:control_almacen_frontend/providers/inventario_provider.dart';
 import 'package:control_almacen_frontend/providers/salidas_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:control_almacen_frontend/providers/usuarios_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +28,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SalidasProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => InventarioProvider()),
+        ChangeNotifierProvider(create: (_) => UsuariosProvider()),
       ],
       child: const MyApp(),
     ),

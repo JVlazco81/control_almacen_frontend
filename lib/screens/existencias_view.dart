@@ -119,8 +119,14 @@ class _ExistenciasViewState extends State<Existencias_View> {
                         SizedBox(width: 5),
                         IconButton(
                           icon: Icon(Icons.picture_as_pdf, size: 24),
-                          onPressed: () {
-                            // Funcionalidad de generar PDF
+                          onPressed: () async {
+                            final provider = Provider.of<InventarioProvider>(context, listen: false);
+                            await provider.generarReporteInventario();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("📄 Reporte de inventario generado")),
+                              );
+                            }
                           },
                         ),
                       ],

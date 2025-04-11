@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
 import '../services/auth_service.dart';
+import '../providers/usuarios_provider.dart';
+import 'package:provider/provider.dart';
 
 class Gestion_Usuarios extends StatefulWidget {
   const Gestion_Usuarios({super.key});
@@ -34,7 +36,12 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
   final TextEditingController contrasenaController = TextEditingController();
 
   bool _isPasswordVisible = false;
-  String rolSeleccionado = 'Almacenista';
+  int rolSeleccionado = 1; // Almacenista por defecto
+
+  final Map<int, String> roles = {
+    1: 'Almacenista',
+    2: 'Director',
+  };
 
   // Estados de validación
   bool _hasMinLength = false;
@@ -51,17 +58,50 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
     });
   }
 
-  void _agregarUsuario() {
+  void _agregarUsuario() async {
     if (_hasMinLength && _hasUppercase && _hasNumber && _hasSpecialChar) {
-      setState(() {
-        usuariosRegistrados.add({
-          "nombre":
-              "${primerNombreController.text} ${segundoNombreController.text} ${apellidoController.text} ${segundoApellidoController.text}",
-          "matricula": matriculaController.text,
-          "rol": rolSeleccionado,
-        });
-      });
-      _limpiarCampos();
+      try {
+        final provider = Provider.of<UsuariosProvider>(context, listen: false);
+
+        await provider.registrarNuevoUsuario(
+          idRol: rolSeleccionado,
+          primerNombre: primerNombreController.text,
+          segundoNombre: segundoNombreController.text,
+          primerApellido: apellidoController.text,
+          segundoApellido: segundoApellidoController.text,
+          password: contrasenaController.text,
+        );
+
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Usuario registrado'),
+            content: Text('✅ Usuario creado correctamente.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Aceptar'),
+              ),
+            ],
+          ),
+        );
+
+        _limpiarCampos();
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Error'),
+            content: Text('❌ No se pudo registrar el usuario.\n${e.toString()}'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cerrar'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
@@ -72,6 +112,13 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
     segundoApellidoController.clear();
     matriculaController.clear();
     contrasenaController.clear();
+
+    setState(() {
+      _hasMinLength = false;
+      _hasUppercase = false;
+      _hasNumber = false;
+      _hasSpecialChar = false;
+    });
   }
 
   List<Map<String, String>> usuariosRegistrados = [];
@@ -186,16 +233,7 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: matriculaController,
-                            decoration: const InputDecoration(
-                              labelText: 'Matrícula / Núm. Empleado',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
+                        const SizedBox(height: 10),
                       ],
                     ),
 
@@ -226,21 +264,18 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
 
                     const SizedBox(height: 10),
 
-                    DropdownButtonFormField<String>(
+                    DropdownButtonFormField<int>(
                       value: rolSeleccionado,
                       decoration: const InputDecoration(
                         labelText: 'Rol de usuario',
                         border: OutlineInputBorder(),
                       ),
-                      items:
-                          ['Director', 'Almacenista']
-                              .map(
-                                (rol) => DropdownMenuItem(
-                                  value: rol,
-                                  child: Text(rol),
-                                ),
-                              )
-                              .toList(),
+                      items: roles.entries.map(
+                        (entry) => DropdownMenuItem<int>(
+                          value: entry.key,
+                          child: Text(entry.value),
+                        ),
+                      ).toList(),
                       onChanged: (value) {
                         setState(() {
                           rolSeleccionado = value!;

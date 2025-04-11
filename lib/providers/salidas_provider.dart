@@ -109,6 +109,14 @@ class SalidasProvider extends ChangeNotifier {
 
     final result = await SalidaService.registrarSalida(jsonSalida);
 
+    if (result["success"] == true && result.containsKey("id_salida")) {
+      try {
+        int idSalida = result["id_salida"];
+        await SalidaService.descargarPDFSalida(idSalida);
+      } catch (e) {
+        print("❌ Error al descargar PDF de salida: $e");
+      }
+    }
     _isLoading = false;
     notifyListeners();
     return result;

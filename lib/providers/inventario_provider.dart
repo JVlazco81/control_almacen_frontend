@@ -43,4 +43,12 @@ class InventarioProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> generarReporteInventario() async {
+    try {
+      await InventarioService.descargarReporteInventario();
+    } catch (e) {
+      print("❌ Error al descargar PDF del inventario: $e");
+    }
+  }
 }

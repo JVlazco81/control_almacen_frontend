@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../screens/login.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+import '../screens/login.dart';
 
 class BaseLayout extends StatefulWidget {
   final Widget bodyContent;
@@ -14,6 +17,8 @@ class BaseLayout extends StatefulWidget {
 
 class _BaseLayoutState extends State<BaseLayout> {
   bool _isValeExpanded = false;
+  bool _isExistenciasExpanded = false;
+  bool _isHistorialValesExpanded = false;
   String _selectedMenu = "";
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -28,14 +33,20 @@ class _BaseLayoutState extends State<BaseLayout> {
         case '/existencias':
           _selectedMenu = "Existencias";
           break;
+        case '/historial-cambios':
+          _selectedMenu = "Historial de Cambios";
+          break;
         case '/entrada':
           _selectedMenu = "Entrada";
           break;
         case '/salida':
           _selectedMenu = "Salida";
           break;
-        case '/historial':
-          _selectedMenu = "Historial de Vales";
+        case '/historial-entradas':
+          _selectedMenu = "Historial de Entradas";
+          break;
+        case '/historial-salidas':
+          _selectedMenu = "Historial de Salidas";
           break;
         case '/usuarios':
           _selectedMenu = "Gestión de Usuarios";
@@ -46,7 +57,6 @@ class _BaseLayoutState extends State<BaseLayout> {
     });
   }
 
-  //MOSTRAR EL DIÁLOGO DE CONFIRMACIÓN
   void _confirmarLogout(BuildContext context) {
     showDialog(
       context: context,
@@ -61,9 +71,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                   onPressed:
                       authProvider.isLoading
                           ? null
-                          : () {
-                            Navigator.of(context).pop();
-                          },
+                          : () => Navigator.of(context).pop(),
                   child: const Text("Cancelar"),
                 ),
                 ElevatedButton(
@@ -77,8 +85,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                               MaterialPageRoute(
                                 builder: (context) => const Login(),
                               ),
-                              (route) =>
-                                  false, // Elimina todas las rutas anteriores
+                              (route) => false,
                             );
                           },
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -105,14 +112,11 @@ class _BaseLayoutState extends State<BaseLayout> {
     );
   }
 
-  // BOTÓN DE CERRAR SESIÓN
   Widget _buildLogoutTile(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.logout, color: Colors.red),
       title: const Text('Cerrar Sesión'),
-      onTap: () {
-        _confirmarLogout(context);
-      },
+      onTap: () => _confirmarLogout(context),
     );
   }
 
@@ -129,9 +133,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                     title: const Text('Menú'),
                     leading: IconButton(
                       icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        _scaffoldKey.currentState?.openDrawer();
-                      },
+                      onPressed: () => _scaffoldKey.currentState?.openDrawer(),
                     ),
                   )
                   : null,
@@ -139,26 +141,7 @@ class _BaseLayoutState extends State<BaseLayout> {
           body: Row(
             children: [
               if (!isMobile) _buildSidebar(),
-              Expanded(
-                child: Column(
-                  children: [
-                    // Container(
-                    //   padding: const EdgeInsets.all(20),
-                    //   width: double.infinity,
-                    //   color: const Color.fromARGB(255, 100, 18, 9),
-                    //   child: const Text(
-                    //     'HEAD',
-                    //     style: TextStyle(
-                    //       fontSize: 24,
-                    //       fontWeight: FontWeight.bold,
-                    //       color: Color(0xFFFFFFFF),
-                    //     ),
-                    //   ),
-                    // ),
-                    Expanded(child: widget.bodyContent),
-                  ],
-                ),
-              ),
+              Expanded(child: widget.bodyContent),
             ],
           ),
         );
@@ -171,47 +154,66 @@ class _BaseLayoutState extends State<BaseLayout> {
       child: Column(
         children: [
           _buildDrawerHeader(),
-          _buildDrawerTile(
-            context,
-            'Existencias',
-            Icons.inventory,
-            '/existencias',
+          ExpansionTile(
+            title: const Text('Existencias'),
+            leading: const Icon(Icons.inventory),
+            children: [
+              _buildDrawerTile(
+                context,
+                'Existencias',
+                Icons.list,
+                '/existencias',
+              ),
+              _buildDrawerTile(
+                context,
+                'Historial de Cambios',
+                Icons.history_toggle_off,
+                '/historial-cambios',
+              ),
+            ],
           ),
           ListTile(
             leading: const Icon(Icons.assignment),
             title: const Text('Vales'),
             onTap: () {
-              setState(() {
-                _isValeExpanded = !_isValeExpanded;
-              });
+              setState(() => _isValeExpanded = !_isValeExpanded);
             },
           ),
           if (_isValeExpanded) ...[
             _buildDrawerTile(context, 'Entrada', Icons.input, '/entrada'),
             _buildDrawerTile(context, 'Salida', Icons.output, '/salida'),
           ],
-          _buildDrawerTile(
-            context,
-            'Historial de Vales',
-            Icons.history,
-            '/historial',
+          ExpansionTile(
+            title: const Text('Historial de Vales'),
+            leading: const Icon(Icons.history),
+            children: [
+              _buildDrawerTile(
+                context,
+                'Historial de Entradas',
+                Icons.input,
+                '/historial-entradas',
+              ),
+              _buildDrawerTile(
+                context,
+                'Historial de Salidas',
+                Icons.output,
+                '/historial-salidas',
+              ),
+            ],
           ),
-          if (Provider.of<AuthProvider>(context, listen: false).currentUser?.idRol == 2)
+          if (Provider.of<AuthProvider>(
+                context,
+                listen: false,
+              ).currentUser?.idRol ==
+              2)
             _buildDrawerTile(
               context,
               'Gestión de Usuarios',
               Icons.people,
               '/usuarios',
             ),
-          const Spacer(), // Esto empuja el icono de logout hacia abajo
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text('Cerrar Sesión'),
-            onTap: () {
-              Navigator.pop(context); // Cierra el drawer
-              _confirmarLogout(context);
-            },
-          ), // Logout
+          const Spacer(),
+          _buildLogoutTile(context),
         ],
       ),
     );
@@ -224,7 +226,23 @@ class _BaseLayoutState extends State<BaseLayout> {
       child: Column(
         children: [
           _buildSidebarHeader(),
-          _buildSidebarOption(Icons.inventory, 'Existencias', '/existencias'),
+          _buildSidebarExpandableOption(
+            Icons.inventory,
+            'Existencias',
+            [
+              _buildSidebarOption(Icons.list, 'Existencias', '/existencias'),
+              _buildSidebarOption(
+                Icons.history_toggle_off,
+                'Historial de Cambios',
+                '/historial-cambios',
+              ),
+            ],
+            isExpanded: _isExistenciasExpanded,
+            onTap:
+                () => setState(
+                  () => _isExistenciasExpanded = !_isExistenciasExpanded,
+                ),
+          ),
           _buildSidebarExpandableOption(
             Icons.assignment,
             'Gestión de Productos',
@@ -232,17 +250,42 @@ class _BaseLayoutState extends State<BaseLayout> {
               _buildSidebarOption(Icons.input, 'Entrada', '/entrada'),
               _buildSidebarOption(Icons.output, 'Salida', '/salida'),
             ],
+            isExpanded: _isValeExpanded,
+            onTap: () => setState(() => _isValeExpanded = !_isValeExpanded),
           ),
-          _buildSidebarOption(
+          _buildSidebarExpandableOption(
             Icons.history,
             'Historial de Vales',
-            '/historial',
+            [
+              _buildSidebarOption(
+                Icons.input,
+                'Historial de Entradas',
+                '/historial-entradas',
+              ),
+              _buildSidebarOption(
+                Icons.output,
+                'Historial de Salidas',
+                '/historial-salidas',
+              ),
+            ],
+            isExpanded: _isHistorialValesExpanded,
+            onTap:
+                () => setState(
+                  () => _isHistorialValesExpanded = !_isHistorialValesExpanded,
+                ),
           ),
-          if (Provider.of<AuthProvider>(context, listen: false).currentUser?.idRol == 2)
-            _buildSidebarOption(Icons.people, 'Gestión de Usuarios', '/usuarios'),
-
-          const Spacer(), // Empuja el botón de logout al final
-          _buildLogoutTile(context), // Botón de Logout
+          if (Provider.of<AuthProvider>(
+                context,
+                listen: false,
+              ).currentUser?.idRol ==
+              2)
+            _buildSidebarOption(
+              Icons.people,
+              'Gestión de Usuarios',
+              '/usuarios',
+            ),
+          const Spacer(),
+          _buildLogoutTile(context),
         ],
       ),
     );
@@ -313,16 +356,14 @@ class _BaseLayoutState extends State<BaseLayout> {
   Widget _buildSidebarExpandableOption(
     IconData icon,
     String title,
-    List<Widget> children,
-  ) {
+    List<Widget> children, {
+    required bool isExpanded,
+    required VoidCallback onTap,
+  }) {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {
-            setState(() {
-              _isValeExpanded = !_isValeExpanded;
-            });
-          },
+          onTap: onTap,
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             padding: const EdgeInsets.all(12),
@@ -340,14 +381,14 @@ class _BaseLayoutState extends State<BaseLayout> {
                 ),
                 const Spacer(),
                 Icon(
-                  _isValeExpanded ? Icons.expand_less : Icons.expand_more,
+                  isExpanded ? Icons.expand_less : Icons.expand_more,
                   color: Colors.grey[400],
                 ),
               ],
             ),
           ),
         ),
-        if (_isValeExpanded) ...children,
+        if (isExpanded) ...children,
       ],
     );
   }

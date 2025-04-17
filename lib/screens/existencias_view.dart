@@ -32,13 +32,19 @@ class _ExistenciasViewState extends State<Existencias_View> {
   List<Producto> productosFiltrados = [];
 
   @override
+  @override
   void initState() {
     super.initState();
     _verificarSesion();
-    final provider = Provider.of<InventarioProvider>(context, listen: false);
-    provider.cargarInventario().then((_) {
-      setState(() {
-        productosFiltrados = List.from(provider.inventario);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<InventarioProvider>(context, listen: false);
+      provider.cargarInventario().then((_) {
+        if (mounted) {
+          setState(() {
+            productosFiltrados = List.from(provider.inventario);
+          });
+        }
       });
     });
   }
@@ -120,11 +126,18 @@ class _ExistenciasViewState extends State<Existencias_View> {
                         IconButton(
                           icon: Icon(Icons.picture_as_pdf, size: 24),
                           onPressed: () async {
-                            final provider = Provider.of<InventarioProvider>(context, listen: false);
+                            final provider = Provider.of<InventarioProvider>(
+                              context,
+                              listen: false,
+                            );
                             await provider.generarReporteInventario();
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("📄 Reporte de inventario generado")),
+                                SnackBar(
+                                  content: Text(
+                                    "📄 Reporte de inventario generado",
+                                  ),
+                                ),
                               );
                             }
                           },

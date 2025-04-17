@@ -9,17 +9,27 @@ class EntradasProvider extends ChangeNotifier {
     _isLoading = value;
     notifyListeners(); // Notifica a la UI para que se actualicen los botones
   }
-  
+
   List<Map<String, String>> clavesProducto = [
     {"id": "2111", "nombre": "Materiales, útiles y equipos menores de oficina"},
     {"id": "2121", "nombre": "Materiales y útiles de impresión y reproducción"},
-    {"id": "2122", "nombre": "Material fotográfico, cinematografía y grabación"},
+    {
+      "id": "2122",
+      "nombre": "Material fotográfico, cinematografía y grabación",
+    },
     {"id": "2131", "nombre": "Material estadístico y geográfico"},
-    {"id": "2141", "nombre": "Materiales, útiles, equipos y bienes informáticos"},
+    {
+      "id": "2141",
+      "nombre": "Materiales, útiles, equipos y bienes informáticos",
+    },
     {"id": "2151", "nombre": "Material impreso e información digital"},
     {"id": "2161", "nombre": "Material de limpieza"},
     {"id": "2171", "nombre": "Materiales y útiles de enseñanza"},
-    {"id": "2181", "nombre": "Materiales para el registro e identificación de bienes y personas"},
+    {
+      "id": "2181",
+      "nombre":
+          "Materiales para el registro e identificación de bienes y personas",
+    },
     {"id": "2211", "nombre": "Productos alimenticios para personas"},
     {"id": "2221", "nombre": "Productos alimenticios para animales"},
   ];
@@ -37,7 +47,7 @@ class EntradasProvider extends ChangeNotifier {
   }
 
   Map<String, String>? claveProductoSeleccionada;
-  
+
   // Controladores de texto
   final TextEditingController folioController = TextEditingController();
   final TextEditingController notaController = TextEditingController();
@@ -46,12 +56,19 @@ class EntradasProvider extends ChangeNotifier {
   final TextEditingController fechaFacturaController = TextEditingController();
   final TextEditingController fechaActualController = TextEditingController();
   final TextEditingController entradaAnualController = TextEditingController();
-  final TextEditingController subtotalController = TextEditingController(text: "0.00");
-  final TextEditingController ivaController = TextEditingController(text: "0.00");
-  final TextEditingController totalController = TextEditingController(text: "0.00");
+  final TextEditingController subtotalController = TextEditingController(
+    text: "0.00",
+  );
+  final TextEditingController ivaController = TextEditingController(
+    text: "0.00",
+  );
+  final TextEditingController totalController = TextEditingController(
+    text: "0.00",
+  );
 
   final TextEditingController marcaAutorController = TextEditingController();
-  final TextEditingController nombreDescripcionController = TextEditingController();
+  final TextEditingController nombreDescripcionController =
+      TextEditingController();
   final TextEditingController cantidadController = TextEditingController();
   final TextEditingController costoUnidadController = TextEditingController();
   final TextEditingController totalArticuloController = TextEditingController();
@@ -80,7 +97,10 @@ class EntradasProvider extends ChangeNotifier {
 
   // Método para calcular totales generales
   void calcularTotales() {
-    double subtotal = listaEspera.fold(0, (sum, item) => sum + (double.tryParse(item["total"] ?? "0") ?? 0));
+    double subtotal = listaEspera.fold(
+      0,
+      (sum, item) => sum + (double.tryParse(item["total"] ?? "0") ?? 0),
+    );
     double iva = subtotal * 0.16;
     double total = subtotal + iva;
 
@@ -93,15 +113,18 @@ class EntradasProvider extends ChangeNotifier {
   // Validación de campos en el contenedor 2
   bool validarCampos() {
     return nombreDescripcionController.text.isNotEmpty &&
-           claveProductoSeleccionada != null &&
-           unidadMedidaSeleccionada != null &&
-           cantidadController.text.isNotEmpty &&
-           costoUnidadController.text.isNotEmpty;
+        claveProductoSeleccionada != null &&
+        unidadMedidaSeleccionada != null &&
+        cantidadController.text.isNotEmpty &&
+        costoUnidadController.text.isNotEmpty;
   }
 
   // Validación de los campos generales (Proveedor y Fecha de Factura)
   bool validarCamposGenerales() {
-    return proveedorController.text.isNotEmpty && fechaFacturaController.text.isNotEmpty && folioController.text.isNotEmpty && notaController.text.isNotEmpty;
+    return proveedorController.text.isNotEmpty &&
+        fechaFacturaController.text.isNotEmpty &&
+        folioController.text.isNotEmpty &&
+        notaController.text.isNotEmpty;
   }
 
   // Agregar artículo a la lista de espera
@@ -136,7 +159,7 @@ class EntradasProvider extends ChangeNotifier {
 
     claveProductoSeleccionada = clavesProducto.firstWhere(
       (item) => item["id"] == articulo["claveProducto"],
-      orElse: () => {"id": "", "nombre": ""}
+      orElse: () => {"id": "", "nombre": ""},
     );
     nombreDescripcionController.text = articulo["descripcion"];
     marcaAutorController.text = articulo["marcaAutor"];

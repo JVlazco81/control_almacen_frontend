@@ -1,6 +1,11 @@
+import 'package:control_almacen_frontend/providers/historial_cambios_provider.dart';
 import 'package:control_almacen_frontend/screens/entradas_art.dart';
 import 'package:control_almacen_frontend/screens/existencias_view.dart';
 import 'package:control_almacen_frontend/screens/gestion_usuarios.dart';
+import 'package:control_almacen_frontend/screens/historial_cambios_view.dart';
+import 'package:control_almacen_frontend/screens/historial_entradas_view.dart';
+import 'package:control_almacen_frontend/screens/historial_salidas_view.dart';
+import 'package:control_almacen_frontend/providers/historial_entradas_provider.dart';
 import 'package:control_almacen_frontend/screens/historial_view.dart';
 import 'package:control_almacen_frontend/screens/login.dart';
 import 'package:control_almacen_frontend/screens/salidas_art.dart';
@@ -29,6 +34,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => InventarioProvider()),
         ChangeNotifierProvider(create: (_) => UsuariosProvider()),
+        ChangeNotifierProvider(create: (_) => HistorialCambiosProvider()),
+        ChangeNotifierProvider(create: (_) => HistorialEntradasProvider()),
       ],
       child: const MyApp(),
     ),
@@ -44,7 +51,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Control de Almacén',
       theme: ThemeData(primarySwatch: Colors.blue),
-      // Definir las rutas para la navegación
       initialRoute: '/',
       routes: {
         '/': (context) => Login(),
@@ -54,8 +60,10 @@ class MyApp extends StatelessWidget {
         '/entrada': (context) => Entradas_Art(),
         '/salida': (context) => Salidas_Art(),
         '/usuarios': (context) => Gestion_Usuarios(),
+        '/historial-cambios': (context) => const HistorialCambiosView(),
+        '/historial-entradas': (context) => HistorialEntradasView(),
+        '/historial-salidas': (context) => HistorialSalidasView(),
       },
-      //home: HomeScreen(),
     );
   }
 }

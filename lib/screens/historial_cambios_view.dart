@@ -189,17 +189,24 @@ class _HistorialCambiosViewState extends State<HistorialCambiosView> {
                                       DataCell(
                                         cambios.isEmpty
                                             ? const Text(
-                                              "Sin cambios detectables",
-                                              style: TextStyle(
-                                                fontStyle: FontStyle.italic,
-                                                color: Colors.grey,
-                                              ),
-                                            )
-                                            : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: cambios,
-                                            ),
+                                                "Sin cambios detectables",
+                                                style: TextStyle(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.grey,
+                                                ),
+                                              )
+                                              : SizedBox(
+                                                  height: 100,
+                                                  child: Scrollbar(
+                                                    thumbVisibility: true,
+                                                    child: SingleChildScrollView(
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: cambios,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                       ),
                                     ],
                                   );

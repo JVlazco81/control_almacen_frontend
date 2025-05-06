@@ -3,6 +3,7 @@ import 'package:control_almacen_frontend/widgets/BaseLayout.dart';
 import '../services/auth_service.dart';
 import '../providers/usuarios_provider.dart';
 import 'package:provider/provider.dart';
+import '../widgets/UsuariosTable.dart';
 
 class Gestion_Usuarios extends StatefulWidget {
   const Gestion_Usuarios({super.key});
@@ -312,6 +313,15 @@ class _Gestion_UsuariosState extends State<Gestion_Usuarios> {
                   ],
                 ),
               ),
+            ),
+            const SizedBox(height: 30),
+            const Text(
+              'Lista de Usuarios',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Expanded(
+              child: UsuariosTable(),
             ),
           ],
         ),

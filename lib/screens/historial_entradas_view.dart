@@ -219,14 +219,22 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
                                       DataCell(Text('${entrada.entradaAnual}')),
                                       //ARTÍCULOS
                                       DataCell(
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: entrada.productos.map((producto) {
-                                            return Text(
-                                              '${producto.descripcion} x ${producto.cantidad}',
-                                              style: const TextStyle(fontSize: 12),
-                                            );
-                                          }).toList(),
+                                        SizedBox(
+                                          height: 80, // altura máxima visible (ajusta si lo ves necesario)
+                                          child: Scrollbar(
+                                            thumbVisibility: true,
+                                            child: SingleChildScrollView(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: entrada.productos.map((producto) {
+                                                  return Text(
+                                                    '${producto.descripcion} x ${producto.cantidad}',
+                                                    style: const TextStyle(fontSize: 12),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       //MONTO TOTAL

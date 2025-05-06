@@ -1,23 +1,30 @@
+// Flutter & Third-party packages
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+
+// Providers
+import 'package:control_almacen_frontend/providers/auth_provider.dart';
+import 'package:control_almacen_frontend/providers/entradas_provider.dart';
 import 'package:control_almacen_frontend/providers/historial_cambios_provider.dart';
+import 'package:control_almacen_frontend/providers/historial_entradas_provider.dart';
+import 'package:control_almacen_frontend/providers/historial_salidas_provider.dart';
+import 'package:control_almacen_frontend/providers/inventario_provider.dart';
+import 'package:control_almacen_frontend/providers/salidas_provider.dart';
+import 'package:control_almacen_frontend/providers/usuarios_provider.dart';
+
+// Screens
+import 'package:control_almacen_frontend/screens/bienvenida.dart';
 import 'package:control_almacen_frontend/screens/entradas_art.dart';
 import 'package:control_almacen_frontend/screens/existencias_view.dart';
 import 'package:control_almacen_frontend/screens/gestion_usuarios.dart';
 import 'package:control_almacen_frontend/screens/historial_cambios_view.dart';
 import 'package:control_almacen_frontend/screens/historial_entradas_view.dart';
 import 'package:control_almacen_frontend/screens/historial_salidas_view.dart';
-import 'package:control_almacen_frontend/providers/historial_entradas_provider.dart';
 import 'package:control_almacen_frontend/screens/historial_view.dart';
 import 'package:control_almacen_frontend/screens/login.dart';
 import 'package:control_almacen_frontend/screens/salidas_art.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:control_almacen_frontend/providers/entradas_provider.dart';
-import 'package:control_almacen_frontend/screens/bienvenida.dart';
-import 'package:control_almacen_frontend/providers/auth_provider.dart';
-import 'package:control_almacen_frontend/providers/inventario_provider.dart';
-import 'package:control_almacen_frontend/providers/salidas_provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:control_almacen_frontend/providers/usuarios_provider.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +43,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UsuariosProvider()),
         ChangeNotifierProvider(create: (_) => HistorialCambiosProvider()),
         ChangeNotifierProvider(create: (_) => HistorialEntradasProvider()),
+        ChangeNotifierProvider(create: (_) => HistorialSalidasProvider()),
       ],
       child: const MyApp(),
     ),

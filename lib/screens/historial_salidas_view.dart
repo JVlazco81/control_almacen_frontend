@@ -246,8 +246,7 @@ class _HistorialSalidasViewState extends State<HistorialSalidasView> {
 
                                         if (value == 'pdf') {
                                           try {
-                                            await HistorialSalidasService
-                                                .abrirPDF(salida.id);
+                                            await HistorialSalidasService.descargarPDFSalida(salida.id);
                                           } catch (e) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(

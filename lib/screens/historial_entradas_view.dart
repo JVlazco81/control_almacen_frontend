@@ -251,7 +251,7 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
 
                                             if (value == 'pdf') {
                                               try {
-                                                await HistorialEntradasService.abrirPDF(entrada.id);
+                                                await HistorialEntradasService.descargarPDFEntrada(entrada.id);
                                               } catch (e) {
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(content: Text('❌ Error al abrir el PDF: $e')),

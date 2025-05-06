@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../models/entrada_historial.dart';
-import '../services/auth_service.dart';
+import '../services/historial_entrada_service.dart';
 
 class HistorialEntradasProvider extends ChangeNotifier {
   List<EntradaHistorial> _entradas = [];
@@ -16,33 +16,11 @@ class HistorialEntradasProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final token = await AuthService.getToken();
-    final url = Uri.parse('http://192.168.0.21:80/api/historial-entradas');
-
     try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        _entradas =
-            data
-                .map(
-                  (e) => EntradaHistorial.fromJson(e as Map<String, dynamic>),
-                )
-                .toList();
-      } else {
-        _entradas = [];
-        debugPrint("❌ Error backend: ${response.statusCode}");
-      }
+      _entradas = await HistorialEntradasService.obtenerEntradas();
     } catch (e) {
       _entradas = [];
-      debugPrint("❌ Error conexión: $e");
+      debugPrint("❌ Error al cargar entradas: $e");
     }
 
     _isLoading = false;

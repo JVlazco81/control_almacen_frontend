@@ -60,7 +60,7 @@ class EntradaService {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
 
-    final url = Uri.parse("$baseUrl/vale-entrada/$idEntrada?pdf=true");
+    final url = Uri.parse("$baseUrl/entradas/vales/$idEntrada?pdf=true");
 
     final response = await http.get(url, headers: {
       "Authorization": "Bearer $token",

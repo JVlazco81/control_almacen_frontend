@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/entrada_historial.dart';
 import '../providers/historial_entradas_provider.dart';
 import '../widgets/BaseLayout.dart';
+import '../services/historial_entrada_service.dart';
 
 class HistorialEntradasView extends StatefulWidget {
   const HistorialEntradasView({super.key});
@@ -126,19 +127,6 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
     }
   }
 
-  void _abrirPDF(int idEntrada) async {
-    final url = Uri.parse(
-      'http://192.168.0.21:80/api/vale-salida/$idEntrada?pdf=true',
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("No se pudo abrir el PDF")));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BaseLayout(
@@ -206,10 +194,10 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
                               ),
                               const DataColumn(label: Text('Fecha factura')),
                               const DataColumn(label: Text('Nota')),
-                              const DataColumn(label: Text('Año')),
+                              const DataColumn(label: Text('Entrada')),
                               const DataColumn(label: Text('Artículos')),
                               const DataColumn(label: Text('Monto total')),
-                              const DataColumn(label: Text('PDF')),
+                              const DataColumn(label: Text('Opciones')),
                             ],
                             rows:
                                 _paginar(_filtradas).map((entrada) {
@@ -229,17 +217,142 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
                                       ),
                                       DataCell(Text(entrada.nota ?? '-')),
                                       DataCell(Text('${entrada.entradaAnual}')),
-                                      const DataCell(Text('Pendiente')),
-                                      const DataCell(Text('Pendiente')),
+                                      //ARTÍCULOS
                                       DataCell(
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.picture_as_pdf,
-                                            color: Colors.red,
-                                          ),
-                                          tooltip: "Ver PDF",
-                                          onPressed:
-                                              () => _abrirPDF(entrada.id),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: entrada.productos.map((producto) {
+                                            return Text(
+                                              '${producto.descripcion} x ${producto.cantidad}',
+                                              style: const TextStyle(fontSize: 12),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                      //MONTO TOTAL
+                                      DataCell(
+                                        Text(
+                                          '\$${entrada.productos.fold<double>(0, (suma, p) => suma + (p.cantidad * p.precio)).toStringAsFixed(2)}',
+                                        ),
+                                      ),
+                                      DataCell(
+                                        PopupMenuButton<String>(
+                                          icon: const Icon(Icons.more_vert),
+                                          onSelected: (value) async {
+                                            final provider = Provider.of<HistorialEntradasProvider>(context, listen: false);
+
+                                            if (value == 'pdf') {
+                                              try {
+                                                await HistorialEntradasService.abrirPDF(entrada.id);
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text('❌ Error al abrir el PDF: $e')),
+                                                );
+                                              }
+                                            } else if (value == 'eliminar') {
+                                              bool confirmar = false;
+                                              bool _eliminando = false;
+
+                                              await showDialog(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                builder: (_) {
+                                                  return StatefulBuilder(
+                                                    builder: (context, setState) {
+                                                      return AlertDialog(
+                                                        title: const Text('¿Eliminar entrada?'),
+                                                        content: const Text(
+                                                          'Esta acción no se puede deshacer. ¿Deseas continuar?',
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: _eliminando ? null : () => Navigator.pop(context),
+                                                            child: const Text('Cancelar'),
+                                                          ),
+                                                          ElevatedButton(
+                                                            onPressed: _eliminando
+                                                                ? null
+                                                                : () async {
+                                                                    setState(() => _eliminando = true);
+                                                                    confirmar = true;
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                            child: _eliminando
+                                                                ? const SizedBox(
+                                                                    width: 18,
+                                                                    height: 18,
+                                                                    child: CircularProgressIndicator(
+                                                                      strokeWidth: 2,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  )
+                                                                : const Text('Eliminar'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              );
+
+                                              if (confirmar) {
+                                                try {
+                                                  await HistorialEntradasService.eliminarEntrada(entrada.id);
+                                                  await provider.cargarEntradas();
+
+                                                  await showDialog(
+                                                    context: context,
+                                                    builder: (_) => AlertDialog(
+                                                      title: const Text('Entrada eliminada'),
+                                                      content: const Text('✅ La entrada ha sido eliminada exitosamente.'),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                          onPressed: () => Navigator.pop(context),
+                                                          child: const Text('Aceptar'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                } catch (e) {
+                                                  await showDialog(
+                                                    context: context,
+                                                    builder: (_) => AlertDialog(
+                                                      title: const Text('Error al eliminar'),
+                                                      content: Text('❌ Ocurrió un error al intentar eliminar la entrada.\n$e'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.pop(context),
+                                                          child: const Text('Cerrar'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              }
+                                            }
+                                          },
+                                          itemBuilder: (context) => [
+                                            PopupMenuItem(
+                                              value: 'pdf',
+                                              child: Row(
+                                                children: const [
+                                                  Icon(Icons.picture_as_pdf, color: Colors.red),
+                                                  SizedBox(width: 8),
+                                                  Text('Ver PDF'),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              value: 'eliminar',
+                                              child: Row(
+                                                children: const [
+                                                  Icon(Icons.delete, color: Colors.red),
+                                                  SizedBox(width: 8),
+                                                  Text('Eliminar'),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],

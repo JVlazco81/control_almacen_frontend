@@ -18,12 +18,12 @@ class SalidaService {
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");
 
-      print("📤 Enviando POST a $baseUrl/salidas/generar");
+      print("📤 Enviando POST a $baseUrl/salidas");
       print("🔑 Token: $token");
       print("📦 Payload: $jsonSalida");
 
       final response = await http.post(
-        Uri.parse("$baseUrl/salidas/generar"),
+        Uri.parse("$baseUrl/salidas"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -57,7 +57,7 @@ class SalidaService {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
 
-    final url = Uri.parse("$baseUrl/vale-salida/$idSalida?pdf=true");
+    final url = Uri.parse("$baseUrl/salidas/vales/$idSalida?pdf=true");
 
     final response = await http.get(url, headers: {
       "Authorization": "Bearer $token",

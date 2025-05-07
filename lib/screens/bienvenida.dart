@@ -82,14 +82,14 @@ class _BienvenidaState extends State<Bienvenida> {
                             ],
                           ),
                         ),
-                        Flexible(
+                        /*Flexible(
                           child: Image.asset(
                             'assets/images/InstitutoLogo.png',
                             width: screenWidth * 0.3,
                             height: screenWidth * 0.3,
                             fit: BoxFit.contain,
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
                   ),

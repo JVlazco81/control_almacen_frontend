@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:provider/provider.dart';
 import '../../providers/entradas_provider.dart';
+import '../../widgets/producto_selector_dialog.dart';
 
 class FormProductos extends StatelessWidget {
   @override
@@ -42,7 +43,21 @@ class FormProductos extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: provider.nombreDescripcionController,
-                  decoration: InputDecoration(labelText: 'Nombre/Descripción'),
+                  decoration: InputDecoration(
+                    labelText: 'Nombre/Descripción',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () async {
+                        final seleccionado = await showDialog<String>(
+                          context: context,
+                          builder: (context) => ProductoSelectorDialog(),
+                        );
+                        if (seleccionado != null) {
+                          provider.nombreDescripcionController.text = seleccionado;
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
             ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/entradas_provider.dart';
+import '../../widgets/proveedor_selector_dialog.dart';
 
 class FormularioInformacion extends StatelessWidget {
   @override
@@ -27,7 +28,21 @@ class FormularioInformacion extends StatelessWidget {
                 flex: 2,
                 child: TextField(
                   controller: provider.proveedorController,
-                  decoration: InputDecoration(labelText: 'Proveedor'),
+                  decoration: InputDecoration(
+                    labelText: 'Proveedor',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () async {
+                        final seleccionado = await showDialog<String>(
+                          context: context,
+                          builder: (context) => ProveedorSelectorDialog(),
+                        );
+                        if (seleccionado != null) {
+                          provider.proveedorController.text = seleccionado;
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: 10),

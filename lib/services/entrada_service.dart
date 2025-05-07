@@ -89,4 +89,26 @@ class EntradaService {
       throw Exception("Error al descargar el PDF: ${response.statusCode}");
     }
   }
+
+  static Future<List<String>> buscarProveedores(String query) async {
+    String baseUrl = await ApiConfig.getBaseUrl();
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+
+    final response = await http.get(
+      Uri.parse("$baseUrl/proveedores?query=$query"),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data.map<String>((item) => item['nombre_proveedor'].toString()).toList();
+    } else {
+      throw Exception("Error al buscar proveedores: ${response.body}");
+    }
+  }
 }

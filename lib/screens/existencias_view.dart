@@ -176,7 +176,7 @@ class _ExistenciasViewState extends State<Existencias_View> {
                               DataColumn(label: Text('CLAVE DEL PRODUCTO')),
                               DataColumn(label: Text('DESCRIPCIÓN')),
                               DataColumn(label: Text('MARCA/AUTOR')),
-                              DataColumn(label: Text('CATEGORÍA')),
+                              //DataColumn(label: Text('CATEGORÍA')),
                               DataColumn(label: Text('UNIDAD')),
                               DataColumn(label: Text('EXISTENCIAS')),
                               DataColumn(label: Text('COSTO POR UNIDAD')),
@@ -197,7 +197,7 @@ class _ExistenciasViewState extends State<Existencias_View> {
                                       DataCell(
                                         Text(producto.marcaAutor ?? "-"),
                                       ),
-                                      DataCell(Text(producto.categoria)),
+                                      //DataCell(Text(producto.categoria)),
                                       DataCell(Text(producto.unidad)),
                                       DataCell(Text("${producto.existencias}")),
                                       DataCell(

@@ -85,7 +85,7 @@ class EntradasProvider extends ChangeNotifier {
   EntradasProvider() {
     fechaActualController.text =
         "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
-    entradaAnualController.text = "4/${DateTime.now().year}";
+    entradaAnualController.text = "#/${DateTime.now().year}";
   }
 
   // Método para calcular el total del artículo en el contenedor 2
@@ -123,6 +123,8 @@ class EntradasProvider extends ChangeNotifier {
   bool validarCamposGenerales() {
     return proveedorController.text.isNotEmpty &&
         fechaFacturaController.text.isNotEmpty &&
+        fechaActualController.text.isNotEmpty &&
+        entradaAnualController.text.isNotEmpty &&
         folioController.text.isNotEmpty &&
         notaController.text.isNotEmpty;
   }
@@ -187,6 +189,7 @@ class EntradasProvider extends ChangeNotifier {
     notifyListeners();
     folioController.clear();
     notaController.clear();
+    entradaAnualController.text = "#/${DateTime.now().year}";
   }
 
   // Limpiar solo los campos del contenedor 2 (productos)

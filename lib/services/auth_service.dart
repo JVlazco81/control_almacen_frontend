@@ -6,9 +6,16 @@ import '../models/user.dart';
 
 class AuthService {
   // Iniciar sesión y obtener token + usuario
-  static Future<bool> login(User user, String password) async {
-    String baseUrl = await ApiConfig.getBaseUrl();
-    final response = await http.post(
+  static Future<bool> login(
+    User user,
+    String password, {
+    http.Client? client,
+    String? baseUrl,
+  }) async {
+    client ??= http.Client();
+    baseUrl ??= await ApiConfig.getBaseUrl();
+
+    final response = await client.post(
       Uri.parse("$baseUrl/login"),
       headers: {
         "Content-Type": "application/json",
@@ -20,7 +27,6 @@ class AuthService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // Guardar token y usuario en SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString("access_token", data["token"]);
       await prefs.setString("user_data", jsonEncode(data["user"]));
@@ -32,15 +38,13 @@ class AuthService {
   // Obtener token guardado
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("access_token");
-    return token;
+    return prefs.getString("access_token");
   }
 
   // Obtener datos del usuario
   static Future<User?> getUser() async {
     final prefs = await SharedPreferences.getInstance();
-    String? userData = prefs.getString("user_data");
-
+    final userData = prefs.getString("user_data");
     if (userData != null) {
       return User.fromJson(jsonDecode(userData));
     }
@@ -48,11 +52,17 @@ class AuthService {
   }
 
   // Cerrar sesión y eliminar datos guardados
-  static Future<void> logout() async {
-    String? token = await getToken();
+  static Future<void> logout({
+    http.Client? client,
+    String? baseUrl,
+  }) async {
+    client ??= http.Client();
+    final token = await getToken();
+
     if (token != null) {
-      String baseUrl = await ApiConfig.getBaseUrl();
-      await http.post(
+      baseUrl ??= await ApiConfig.getBaseUrl();
+
+      await client.post(
         Uri.parse("$baseUrl/logout"),
         headers: {
           "Authorization": "Bearer $token",

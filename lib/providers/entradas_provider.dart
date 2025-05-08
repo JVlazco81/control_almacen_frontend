@@ -161,7 +161,6 @@ List<Map<String, String>> clavesProducto = [
   bool validarCamposGenerales() {
     return proveedorController.text.isNotEmpty &&
         fechaFacturaController.text.isNotEmpty &&
-        fechaActualController.text.isNotEmpty &&
         entradaAnualController.text.isNotEmpty &&
         folioController.text.isNotEmpty &&
         notaController.text.isNotEmpty;

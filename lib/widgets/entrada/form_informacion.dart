@@ -103,19 +103,12 @@ class FormularioInformacion extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: provider.fechaActualController,
-                  decoration: InputDecoration(labelText: 'Fecha de entrada'),
-                  readOnly: true,
-                  onTap: () => showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  ).then((pickedDate) {
-                    if (pickedDate != null) {
-                      provider.fechaActualController.text =
-                          "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                    }
-                  }),
+                  decoration: InputDecoration(
+                    labelText: 'Fecha actual entrada',
+                    filled: true,
+                    fillColor: Colors.grey[300],
+                    enabled: false,
+                  ),
                 ),
               ),
             ],

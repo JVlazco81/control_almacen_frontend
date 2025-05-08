@@ -27,13 +27,14 @@ class SalidasProvider extends ChangeNotifier {
   SalidasProvider() {
     fechaActualController.text =
         "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
-    salidaAnualController.text = "1/${DateTime.now().year}";
+    salidaAnualController.text = "#/${DateTime.now().year}";
   }
 
   bool validarCamposGenerales() {
     return departamentoController.text.isNotEmpty &&
         encargadoController.text.isNotEmpty &&
-        ordenCompraController.text.isNotEmpty;
+        ordenCompraController.text.isNotEmpty &&
+        salidaAnualController.text.isEmpty;
   }
 
   bool validarCamposProducto() {
@@ -85,6 +86,7 @@ class SalidasProvider extends ChangeNotifier {
     limpiarCamposProducto();
     listaEspera.clear();
     notifyListeners();
+    salidaAnualController.text = "#/${DateTime.now().year}";
   }
 
   int calcularTotalArticulos() {

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../providers/salidas_provider.dart';
 import '../departamento_selector_dialog.dart';
 import '../encargado_selector_dialog.dart';
+import 'package:flutter/services.dart';
 
 class FormularioInformacionSalida extends StatelessWidget {
   @override
@@ -75,6 +76,8 @@ class FormularioInformacionSalida extends StatelessWidget {
                 child: TextField(
                   controller: provider.ordenCompraController,
                   decoration: InputDecoration(labelText: 'Orden de compra'),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
               ),
               SizedBox(width: 10),
@@ -82,11 +85,12 @@ class FormularioInformacionSalida extends StatelessWidget {
                 child: TextField(
                   controller: provider.salidaAnualController,
                   decoration: InputDecoration(
-                    labelText: 'Salida actual',
-                    filled: true,
-                    fillColor: Colors.grey[300],
-                    enabled: false,
+                    labelText: 'Salida anual',
                   ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    provider.notifyListeners();
+                  },
                 ),
               ),
               SizedBox(width: 10),
@@ -94,7 +98,7 @@ class FormularioInformacionSalida extends StatelessWidget {
                 child: TextField(
                   controller: provider.fechaActualController,
                   decoration: InputDecoration(
-                    labelText: 'Fecha actual',
+                    labelText: 'Fecha actual salida',
                     filled: true,
                     fillColor: Colors.grey[300],
                     enabled: false,

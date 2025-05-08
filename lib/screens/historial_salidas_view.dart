@@ -173,7 +173,7 @@ class _HistorialSalidasViewState extends State<HistorialSalidasView> {
                           child: DataTable(
                             sortColumnIndex: _getColumnIndex(ordenActual),
                             sortAscending: ascendente,
-                            headingRowColor: MaterialStateProperty.all(
+                            headingRowColor: WidgetStateProperty.all(
                               Colors.grey[200],
                             ),
                             columns: [
@@ -258,7 +258,7 @@ class _HistorialSalidasViewState extends State<HistorialSalidasView> {
                                           }
                                         } else if (value == 'eliminar') {
                                           bool confirmar = false;
-                                          bool _eliminando = false;
+                                          bool eliminando = false;
 
                                           await showDialog(
                                             context: context,
@@ -275,7 +275,7 @@ class _HistorialSalidasViewState extends State<HistorialSalidasView> {
                                                     actions: [
                                                       TextButton(
                                                         onPressed:
-                                                            _eliminando
+                                                            eliminando
                                                                 ? null
                                                                 : () =>
                                                                     Navigator.pop(
@@ -284,17 +284,17 @@ class _HistorialSalidasViewState extends State<HistorialSalidasView> {
                                                             'Cancelar'),
                                                       ),
                                                       ElevatedButton(
-                                                        onPressed: _eliminando
+                                                        onPressed: eliminando
                                                             ? null
                                                             : () async {
                                                                 setState(() =>
-                                                                    _eliminando =
+                                                                    eliminando =
                                                                         true);
                                                                 confirmar = true;
                                                                 Navigator.pop(
                                                                     context);
                                                               },
-                                                        child: _eliminando
+                                                        child: eliminando
                                                             ? const SizedBox(
                                                                 width: 18,
                                                                 height: 18,

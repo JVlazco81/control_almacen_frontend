@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/entrada_service.dart';
 
 class ProductoSelectorDialog extends StatefulWidget {
+  const ProductoSelectorDialog({super.key});
+
   @override
   _ProductoSelectorDialogState createState() => _ProductoSelectorDialogState();
 }
@@ -52,7 +54,7 @@ class _ProductoSelectorDialogState extends State<ProductoSelectorDialog> {
           SizedBox(height: 10),
           _isLoading
               ? Center(child: CircularProgressIndicator())
-              : Container(
+              : SizedBox(
                   height: 300,
                   width: double.maxFinite,
                   child: _resultados.isEmpty

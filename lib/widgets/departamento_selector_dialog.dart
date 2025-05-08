@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/salida_service.dart';
 
 class DepartamentoSelectorDialog extends StatefulWidget {
+  const DepartamentoSelectorDialog({super.key});
+
   @override
   _DepartamentoSelectorDialogState createState() => _DepartamentoSelectorDialogState();
 }
@@ -52,7 +54,7 @@ class _DepartamentoSelectorDialogState extends State<DepartamentoSelectorDialog>
           SizedBox(height: 10),
           _isLoading
               ? Center(child: CircularProgressIndicator())
-              : Container(
+              : SizedBox(
                   height: 300,
                   width: double.maxFinite,
                   child: _resultados.isEmpty

@@ -4,6 +4,8 @@ import '../../providers/entradas_provider.dart';
 import '../../widgets/proveedor_selector_dialog.dart';
 
 class FormularioInformacion extends StatelessWidget {
+  const FormularioInformacion({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<EntradasProvider>(context);

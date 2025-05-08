@@ -4,6 +4,8 @@ import '../../providers/entradas_provider.dart';
 import '../table_cell.dart';
 
 class TablaEspera extends StatelessWidget {
+  const TablaEspera({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<EntradasProvider>(context);
@@ -104,7 +106,7 @@ class TablaEspera extends StatelessWidget {
                       ),
                     ],
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),

@@ -122,7 +122,7 @@ class _HistorialCambiosViewState extends State<HistorialCambiosView> {
                             columnSpacing: 20,
                             headingRowHeight: 40,
                             dataRowHeight: 80,
-                            headingRowColor: MaterialStateColor.resolveWith(
+                            headingRowColor: WidgetStateColor.resolveWith(
                               (states) => Colors.grey.shade300,
                             ),
                             border: TableBorder.all(color: Colors.black12),

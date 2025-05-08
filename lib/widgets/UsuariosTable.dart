@@ -35,7 +35,7 @@ class _UsuariosTableState extends State<UsuariosTable> {
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
+            headingRowColor: WidgetStateProperty.all(Colors.grey[200]),
             columns: const [
               DataColumn(label: Text('Rol')),
               DataColumn(label: Text('Primer Nombre')),
@@ -91,7 +91,7 @@ class _UsuariosTableState extends State<UsuariosTable> {
                         }
                         if (value == 'eliminar') {
                           bool confirmar = false;
-                          bool _eliminando = false;
+                          bool eliminando = false;
                           await showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -105,18 +105,18 @@ class _UsuariosTableState extends State<UsuariosTable> {
                                     ),
                                     actions: [
                                       TextButton(
-                                        onPressed: _eliminando ? null : () => Navigator.pop(context),
+                                        onPressed: eliminando ? null : () => Navigator.pop(context),
                                         child: const Text('Cancelar'),
                                       ),
                                       ElevatedButton(
-                                        onPressed: _eliminando
+                                        onPressed: eliminando
                                             ? null
                                             : () async {
-                                                setState(() => _eliminando = true);
+                                                setState(() => eliminando = true);
                                                 confirmar = true;
                                                 Navigator.pop(context);
                                               },
-                                        child: _eliminando
+                                        child: eliminando
                                             ? const SizedBox(
                                                 width: 18,
                                                 height: 18,

@@ -6,6 +6,8 @@ import '../encargado_selector_dialog.dart';
 import 'package:flutter/services.dart';
 
 class FormularioInformacionSalida extends StatelessWidget {
+  const FormularioInformacionSalida({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SalidasProvider>(context);

@@ -6,6 +6,8 @@ import '../../providers/entradas_provider.dart';
 import '../../widgets/producto_selector_dialog.dart';
 
 class FormProductos extends StatelessWidget {
+  const FormProductos({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<EntradasProvider>(context);
@@ -30,7 +32,7 @@ class FormProductos extends StatelessWidget {
                 child: 
                 DropdownSearch<Map<String, String>>(
                   items: provider.clavesProducto,
-                  itemAsString: (item) => "${item?['id']} - ${item?['nombre']}",
+                  itemAsString: (item) => "${item['id']} - ${item['nombre']}",
                   selectedItem: provider.claveProductoSeleccionada,
                   popupProps: PopupProps.menu(showSearchBox: true),
                   dropdownDecoratorProps: DropDownDecoratorProps(

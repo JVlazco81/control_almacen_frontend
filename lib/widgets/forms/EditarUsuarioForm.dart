@@ -6,7 +6,7 @@ import '../../providers/usuarios_provider.dart';
 class EditarUsuarioForm extends StatefulWidget {
   final User usuario;
 
-  const EditarUsuarioForm({Key? key, required this.usuario}) : super(key: key);
+  const EditarUsuarioForm({super.key, required this.usuario});
 
   @override
   State<EditarUsuarioForm> createState() => _EditarUsuarioFormState();

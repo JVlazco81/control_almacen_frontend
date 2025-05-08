@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../providers/salidas_provider.dart';
 
 class ResumenTotalesSalida extends StatelessWidget {
+  const ResumenTotalesSalida({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SalidasProvider>(context);

@@ -167,7 +167,7 @@ class _ExistenciasViewState extends State<Existencias_View> {
                             columnSpacing: 12,
                             headingRowHeight: 40,
                             dataRowHeight: 40,
-                            headingRowColor: MaterialStateColor.resolveWith(
+                            headingRowColor: WidgetStateColor.resolveWith(
                               (states) => Colors.grey[300]!,
                             ),
                             border: TableBorder.all(color: Colors.black),
@@ -243,7 +243,7 @@ class _ExistenciasViewState extends State<Existencias_View> {
                                               });
                                             } else if (value == 'eliminar') {
                                               bool confirmar = false;
-                                              bool _eliminando = false;
+                                              bool eliminando = false;
 
                                               await showDialog(
                                                 context: context,
@@ -264,7 +264,7 @@ class _ExistenciasViewState extends State<Existencias_View> {
                                                         actions: [
                                                           TextButton(
                                                             onPressed:
-                                                                _eliminando
+                                                                eliminando
                                                                     ? null
                                                                     : () =>
                                                                         Navigator.pop(
@@ -276,12 +276,12 @@ class _ExistenciasViewState extends State<Existencias_View> {
                                                           ),
                                                           ElevatedButton(
                                                             onPressed:
-                                                                _eliminando
+                                                                eliminando
                                                                     ? null
                                                                     : () async {
                                                                       setState(
                                                                         () =>
-                                                                            _eliminando =
+                                                                            eliminando =
                                                                                 true,
                                                                       );
                                                                       confirmar =
@@ -291,7 +291,7 @@ class _ExistenciasViewState extends State<Existencias_View> {
                                                                       );
                                                                     },
                                                             child:
-                                                                _eliminando
+                                                                eliminando
                                                                     ? SizedBox(
                                                                       width: 18,
                                                                       height:

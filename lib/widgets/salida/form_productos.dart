@@ -5,6 +5,8 @@ import '../../../providers/salidas_provider.dart';
 import '../producto_selector_dialog.dart';
 
 class FormProductosSalida extends StatelessWidget {
+  const FormProductosSalida({super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SalidasProvider>(context);

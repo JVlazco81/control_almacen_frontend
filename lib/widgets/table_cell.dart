@@ -5,10 +5,10 @@ class TableCellWidget extends StatelessWidget {
   final bool isHeader;
 
   const TableCellWidget({
-    Key? key,
+    super.key,
     required this.text,
     this.isHeader = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

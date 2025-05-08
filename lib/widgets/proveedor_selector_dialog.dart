@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/entrada_service.dart';
 
 class ProveedorSelectorDialog extends StatefulWidget {
+  const ProveedorSelectorDialog({super.key});
+
   @override
   _ProveedorSelectorDialogState createState() => _ProveedorSelectorDialogState();
 }
@@ -52,7 +54,7 @@ class _ProveedorSelectorDialogState extends State<ProveedorSelectorDialog> {
           SizedBox(height: 10),
           _isLoading
               ? Center(child: CircularProgressIndicator())
-              : Container(
+              : SizedBox(
                   height: 300,
                   width: double.maxFinite,
                   child: _resultados.isEmpty

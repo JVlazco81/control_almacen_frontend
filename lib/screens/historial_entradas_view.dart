@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../models/entrada_historial.dart';
 import '../providers/historial_entradas_provider.dart';
@@ -176,7 +175,7 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
                           child: DataTable(
                             sortColumnIndex: _getColumnIndex(ordenActual),
                             sortAscending: ascendente,
-                            headingRowColor: MaterialStateProperty.all(
+                            headingRowColor: WidgetStateProperty.all(
                               Colors.grey[200],
                             ),
                             columns: [
@@ -259,7 +258,7 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
                                               }
                                             } else if (value == 'eliminar') {
                                               bool confirmar = false;
-                                              bool _eliminando = false;
+                                              bool eliminando = false;
 
                                               await showDialog(
                                                 context: context,
@@ -274,18 +273,18 @@ class _HistorialEntradasViewState extends State<HistorialEntradasView> {
                                                         ),
                                                         actions: [
                                                           TextButton(
-                                                            onPressed: _eliminando ? null : () => Navigator.pop(context),
+                                                            onPressed: eliminando ? null : () => Navigator.pop(context),
                                                             child: const Text('Cancelar'),
                                                           ),
                                                           ElevatedButton(
-                                                            onPressed: _eliminando
+                                                            onPressed: eliminando
                                                                 ? null
                                                                 : () async {
-                                                                    setState(() => _eliminando = true);
+                                                                    setState(() => eliminando = true);
                                                                     confirmar = true;
                                                                     Navigator.pop(context);
                                                                   },
-                                                            child: _eliminando
+                                                            child: eliminando
                                                                 ? const SizedBox(
                                                                     width: 18,
                                                                     height: 18,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/salida_service.dart';
 
 class EncargadoSelectorDialog extends StatefulWidget {
+  const EncargadoSelectorDialog({super.key});
+
   @override
   _EncargadoSelectorDialogState createState() => _EncargadoSelectorDialogState();
 }
@@ -52,7 +54,7 @@ class _EncargadoSelectorDialogState extends State<EncargadoSelectorDialog> {
           SizedBox(height: 10),
           _isLoading
               ? Center(child: CircularProgressIndicator())
-              : Container(
+              : SizedBox(
                   height: 300,
                   width: double.maxFinite,
                   child: _resultados.isEmpty

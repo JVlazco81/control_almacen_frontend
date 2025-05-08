@@ -8,8 +8,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 class EditarProductoForm extends StatefulWidget {
   final Producto producto;
 
-  const EditarProductoForm({Key? key, required this.producto})
-    : super(key: key);
+  const EditarProductoForm({super.key, required this.producto});
 
   @override
   State<EditarProductoForm> createState() => _EditarProductoFormState();

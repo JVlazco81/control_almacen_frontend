@@ -84,4 +84,48 @@ class SalidaService {
       throw Exception("Error al descargar el PDF de salida: ${response.statusCode}");
     }
   }
+
+  static Future<List<String>> buscarDepartamentos(String query) async {
+    String baseUrl = await ApiConfig.getBaseUrl();
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+
+    final response = await http.get(
+      Uri.parse("$baseUrl/departamentos?query=$query"),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data.map<String>((item) => item['nombre_departamento'].toString()).toList();
+    } else {
+      throw Exception("Error al buscar departamentos: ${response.body}");
+    }
+  }
+
+  static Future<List<String>> buscarEncargados(String query) async {
+    String baseUrl = await ApiConfig.getBaseUrl();
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+
+    final response = await http.get(
+      Uri.parse("$baseUrl/encargados?query=$query"),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data.map<String>((item) => item['nombre_encargado'].toString()).toList();
+    } else {
+      throw Exception("Error al buscar encargados: ${response.body}");
+    }
+  }
 }

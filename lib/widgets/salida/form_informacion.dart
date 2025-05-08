@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/salidas_provider.dart';
+import '../departamento_selector_dialog.dart';
+import '../encargado_selector_dialog.dart';
 
 class FormularioInformacionSalida extends StatelessWidget {
   @override
@@ -23,17 +25,45 @@ class FormularioInformacionSalida extends StatelessWidget {
           SizedBox(height: 10),
           Row(
             children: [
-              Expanded(
-                child: TextField(
-                  controller: provider.departamentoController,
-                  decoration: InputDecoration(labelText: 'Departamento'),
+          Expanded(
+            child: TextField(
+              controller: provider.departamentoController,
+              decoration: InputDecoration(
+                labelText: 'Departamento',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    final seleccionado = await showDialog<String>(
+                      context: context,
+                      builder: (context) => DepartamentoSelectorDialog(),
+                    );
+                    if (seleccionado != null) {
+                      provider.departamentoController.text = seleccionado;
+                    }
+                  },
                 ),
               ),
+            ),
+          ),
               SizedBox(width: 10),
               Expanded(
                 child: TextField(
                   controller: provider.encargadoController,
-                  decoration: InputDecoration(labelText: 'Encargado'),
+                  decoration: InputDecoration(
+                    labelText: 'Encargado',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () async {
+                        final seleccionado = await showDialog<String>(
+                          context: context,
+                          builder: (context) => EncargadoSelectorDialog(),
+                        );
+                        if (seleccionado != null) {
+                          provider.encargadoController.text = seleccionado;
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
             ],

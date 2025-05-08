@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import '../../../providers/salidas_provider.dart';
+import '../producto_selector_dialog.dart';
 
 class FormProductosSalida extends StatelessWidget {
   @override
@@ -59,12 +60,26 @@ class FormProductosSalida extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 10),
-              Expanded(
-                child: TextField(
-                  controller: provider.descripcionController,
-                  decoration: InputDecoration(labelText: 'Descripción'),
-                ),
-              ),
+Expanded(
+  child: TextField(
+    controller: provider.descripcionController,
+    decoration: InputDecoration(
+      labelText: 'Descripción',
+      suffixIcon: IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () async {
+          final seleccionado = await showDialog<String>(
+            context: context,
+            builder: (context) => ProductoSelectorDialog(),
+          );
+          if (seleccionado != null) {
+            provider.descripcionController.text = seleccionado;
+          }
+        },
+      ),
+    ),
+  ),
+),
               SizedBox(width: 10),
               Expanded(
                 child: TextField(

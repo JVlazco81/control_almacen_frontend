@@ -3,6 +3,7 @@
         android:label="control_almacen_frontend"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <uses-library android:name="android.test.runner"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

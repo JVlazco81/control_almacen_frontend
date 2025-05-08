@@ -18,10 +18,6 @@ class SalidaService {
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");
 
-      print("📤 Enviando POST a $baseUrl/salidas");
-      print("🔑 Token: $token");
-      print("📦 Payload: $jsonSalida");
-
       final response = await http.post(
         Uri.parse("$baseUrl/salidas"),
         headers: {
@@ -47,7 +43,6 @@ class SalidaService {
         return {"success": false, "message": response.body};
       }
     } catch (e) {
-      print("❌ Error: $e");
       return {"success": false, "message": "Error de conexión"};
     }
   }

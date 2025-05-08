@@ -115,7 +115,10 @@ class _BaseLayoutState extends State<BaseLayout> {
   Widget _buildLogoutTile(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.logout, color: Colors.red),
-      title: const Text('Cerrar Sesión'),
+      title: const Text(
+        'Cerrar Sesión',
+        style: TextStyle(color: Colors.red),
+    ),
       onTap: () => _confirmarLogout(context),
     );
   }
@@ -225,66 +228,63 @@ class _BaseLayoutState extends State<BaseLayout> {
       color: Colors.grey[900],
       child: Column(
         children: [
-          _buildSidebarHeader(),
-          _buildSidebarExpandableOption(
-            Icons.inventory,
-            'Existencias',
-            [
-              _buildSidebarOption(Icons.list, 'Existencias', '/existencias'),
-              _buildSidebarOption(
-                Icons.history_toggle_off,
-                'Historial de Cambios',
-                '/historial-cambios',
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildSidebarHeader(),
+                  _buildSidebarExpandableOption(
+                    Icons.inventory,
+                    'Existencias',
+                    [
+                      _buildSidebarOption(Icons.list, 'Existencias', '/existencias'),
+                      _buildSidebarOption(
+                        Icons.history_toggle_off,
+                        'Historial de Cambios',
+                        '/historial-cambios',
+                      ),
+                    ],
+                    isExpanded: _isExistenciasExpanded,
+                    onTap: () => setState(() => _isExistenciasExpanded = !_isExistenciasExpanded),
+                  ),
+                  _buildSidebarExpandableOption(
+                    Icons.assignment,
+                    'Gestión de Productos',
+                    [
+                      _buildSidebarOption(Icons.input, 'Entrada', '/entrada'),
+                      _buildSidebarOption(Icons.output, 'Salida', '/salida'),
+                    ],
+                    isExpanded: _isValeExpanded,
+                    onTap: () => setState(() => _isValeExpanded = !_isValeExpanded),
+                  ),
+                  _buildSidebarExpandableOption(
+                    Icons.history,
+                    'Historial de Vales',
+                    [
+                      _buildSidebarOption(
+                        Icons.input,
+                        'Historial de Entradas',
+                        '/historial-entradas',
+                      ),
+                      _buildSidebarOption(
+                        Icons.output,
+                        'Historial de Salidas',
+                        '/historial-salidas',
+                      ),
+                    ],
+                    isExpanded: _isHistorialValesExpanded,
+                    onTap: () => setState(() => _isHistorialValesExpanded = !_isHistorialValesExpanded),
+                  ),
+                  if (Provider.of<AuthProvider>(context, listen: false).currentUser?.idRol == 2)
+                    _buildSidebarOption(
+                      Icons.people,
+                      'Gestión de Usuarios',
+                      '/usuarios',
+                    ),
+                ],
               ),
-            ],
-            isExpanded: _isExistenciasExpanded,
-            onTap:
-                () => setState(
-                  () => _isExistenciasExpanded = !_isExistenciasExpanded,
-                ),
-          ),
-          _buildSidebarExpandableOption(
-            Icons.assignment,
-            'Gestión de Productos',
-            [
-              _buildSidebarOption(Icons.input, 'Entrada', '/entrada'),
-              _buildSidebarOption(Icons.output, 'Salida', '/salida'),
-            ],
-            isExpanded: _isValeExpanded,
-            onTap: () => setState(() => _isValeExpanded = !_isValeExpanded),
-          ),
-          _buildSidebarExpandableOption(
-            Icons.history,
-            'Historial de Vales',
-            [
-              _buildSidebarOption(
-                Icons.input,
-                'Historial de Entradas',
-                '/historial-entradas',
-              ),
-              _buildSidebarOption(
-                Icons.output,
-                'Historial de Salidas',
-                '/historial-salidas',
-              ),
-            ],
-            isExpanded: _isHistorialValesExpanded,
-            onTap:
-                () => setState(
-                  () => _isHistorialValesExpanded = !_isHistorialValesExpanded,
-                ),
-          ),
-          if (Provider.of<AuthProvider>(
-                context,
-                listen: false,
-              ).currentUser?.idRol ==
-              2)
-            _buildSidebarOption(
-              Icons.people,
-              'Gestión de Usuarios',
-              '/usuarios',
             ),
-          const Spacer(),
+          ),
           _buildLogoutTile(context),
         ],
       ),

@@ -32,11 +32,11 @@ class HistorialCambiosProvider with ChangeNotifier {
         _historial =
             data.map((item) => HistorialCambio.fromJson(item)).toList();
       } else {
-        print("❌ Error de backend: ${response.statusCode}");
+        debugPrint("❌ Error de backend: ${response.statusCode}");
         _historial = [];
       }
     } catch (e) {
-      print("❌ Error de conexión: $e");
+      debugPrint("❌ Error de conexión: $e");
       _historial = [];
     }
 

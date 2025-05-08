@@ -17,9 +17,6 @@ class AuthService {
       body: jsonEncode(user.toJsonLogin(password)),
     );
 
-    print("Status Code: ${response.statusCode}");
-    print("Response Body: ${response.body}");
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
@@ -27,8 +24,6 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString("access_token", data["token"]);
       await prefs.setString("user_data", jsonEncode(data["user"]));
-      print("🔍 Token guardado en SharedPreferences: ${prefs.getString("access_token")}");
-
       return true;
     }
     return false;
@@ -38,7 +33,6 @@ class AuthService {
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("access_token");
-    print("🔹 Token en SharedPreferences: $token"); // Verifica si el token está guardado
     return token;
   }
 

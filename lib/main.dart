@@ -31,7 +31,7 @@ Future<void> main() async {
   try {
     await dotenv.load(fileName: "assets/env/.env");
   } catch (e) {
-    print("❌ Error cargando .env: $e");
+    
   }
   runApp(
     MultiProvider(

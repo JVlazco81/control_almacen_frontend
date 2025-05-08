@@ -256,7 +256,6 @@ List<Map<String, String>> clavesProducto = [
 
     // Imprimir el JSON que se enviará al backend
     String jsonEntrada = entrada.toJsonString();
-    print("📤 JSON Enviado al backend: $jsonEntrada");
 
     final result = await EntradaService.subirInventario(jsonEntrada);
 
@@ -265,7 +264,7 @@ List<Map<String, String>> clavesProducto = [
         int idEntrada = result["id_entrada"];
         await EntradaService.descargarPDFEntrada(idEntrada);
       } catch (e) {
-        print("❌ Error al descargar PDF: $e");
+        debugPrint("❌ Error al descargar PDF: $e");
       }
     }
 

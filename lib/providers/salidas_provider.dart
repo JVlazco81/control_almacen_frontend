@@ -34,7 +34,7 @@ class SalidasProvider extends ChangeNotifier {
     return departamentoController.text.isNotEmpty &&
         encargadoController.text.isNotEmpty &&
         ordenCompraController.text.isNotEmpty &&
-        salidaAnualController.text.isEmpty;
+        salidaAnualController.text.isNotEmpty;
   }
 
   bool validarCamposProducto() {

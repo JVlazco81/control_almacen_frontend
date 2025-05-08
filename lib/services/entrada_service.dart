@@ -9,13 +9,18 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 class EntradaService {
-    static Future<Map<String, dynamic>> subirInventario(String jsonEntrada) async {
-    String baseUrl = await ApiConfig.getBaseUrl();
+  static Future<Map<String, dynamic>> subirInventario(
+    String jsonEntrada, {
+    http.Client? client,
+    String? baseUrl,
+  }) async {
+    client ??= http.Client();
+    baseUrl ??= await ApiConfig.getBaseUrl();
 
     try {
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");
-      final response = await http.post(
+      final response = await client.post(
         Uri.parse("$baseUrl/entradas"),
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +35,7 @@ class EntradaService {
         return {
           "success": true,
           "message": "Productos subidos correctamente",
-          "id_entrada": data["id_entrada"]
+          "id_entrada": data["id_entrada"],
         };
       } else {
         return {"success": false, "message": "Error: ${response.body}"};

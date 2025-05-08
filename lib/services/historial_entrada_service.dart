@@ -10,12 +10,16 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HistorialEntradasService {
-  static Future<List<EntradaHistorial>> obtenerEntradas() async {
-    String baseUrl = await ApiConfig.getBaseUrl();
+  static Future<List<EntradaHistorial>> obtenerEntradas({
+    http.Client? client,
+    String? baseUrl,
+  }) async {
+    client ??= http.Client();
+    baseUrl ??= await ApiConfig.getBaseUrl();
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("access_token");
 
-    final response = await http.get(
+    final response = await client.get(
       Uri.parse("$baseUrl/entradas"),
       headers: {
         "Content-Type": "application/json",

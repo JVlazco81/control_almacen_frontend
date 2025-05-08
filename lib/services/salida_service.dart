@@ -9,15 +9,20 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SalidaService {
-  static Future<Map<String, dynamic>> registrarSalida(String jsonSalida) async {
-    String baseUrl = await ApiConfig.getBaseUrl();
+  static Future<Map<String, dynamic>> registrarSalida(
+    String jsonSalida, {
+    http.Client? client,
+    String? baseUrl,
+  }) async {
+    client ??= http.Client();
+    baseUrl ??= await ApiConfig.getBaseUrl();
     final startTime = DateTime.now();
 
     try {
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");
 
-      final response = await http.post(
+      final response = await client.post(
         Uri.parse("$baseUrl/salidas"),
         headers: {
           "Content-Type": "application/json",
@@ -26,10 +31,6 @@ class SalidaService {
         },
         body: jsonSalida,
       );
-
-      final duration = DateTime.now().difference(startTime);
-      print("✅ Respondió en ${duration.inMilliseconds} ms");
-      print("📥 Body: ${response.body}");
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = jsonDecode(response.body);

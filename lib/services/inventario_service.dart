@@ -10,12 +10,17 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 class InventarioService {
-  static Future<List<Producto>> obtenerInventario() async {
-    String baseUrl = await ApiConfig.getBaseUrl();
+  static Future<List<Producto>> obtenerInventario({
+    http.Client? client,
+    String? baseUrl,
+  }) async {
+    client ??= http.Client();
+    baseUrl ??= await ApiConfig.getBaseUrl();
+
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("access_token");
 
-    final response = await http.get(
+    final response = await client.get(
       Uri.parse("$baseUrl/inventario"),
       headers: {
         "Content-Type": "application/json",
